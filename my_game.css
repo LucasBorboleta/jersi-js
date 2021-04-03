@@ -64,8 +64,6 @@
 }
 
 .my_game_cell_class{
-    /*background-color:yellow;
-    opacity:0.5;*/
     position:absolute;
 }
 
@@ -75,7 +73,7 @@
 .my_game_cell_selected_class{
     outline-style:outset !important;
     outline-color:white !important;
-    outline-width:4px !important;
+    outline-width:2px !important;
 }
 
 .my_game_cube_unselected_class{
@@ -83,7 +81,10 @@
 
 .my_game_cube_selected_class{
     box-shadow: 8px 8px 8px black !important;
-
+    transform: scale(1.25) !important;
+    outline-style:outset !important;
+    outline-color:white !important;
+    outline-width:2px !important;
 }
 
 .my_game_cell_name_class{
