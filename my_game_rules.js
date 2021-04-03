@@ -89,15 +89,45 @@ my_game.rules.iSEmptyCell = function(cell){
     return cell.bottom == null && cell.top == null;
 };
 
-my_game.rules.moveCell = function(cell_source, cell_destination){
-    my_game.debug.assert( ! my_game.rules.iSEmptyCell(cell_source), "cell_source");
-    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_source");
+my_game.rules.canBeSourceCell = function(cell){
+    return ! my_game.rules.iSEmptyCell(cell);
+};
+
+my_game.rules.canBeDestinationCell = function(cell){
+    return my_game.rules.iSEmptyCell(cell);
+};
+
+my_game.rules.cellHasCube = function(cell){
+    return cell.bottom != null || cell.top != null;
+};
+
+my_game.rules.cellHasStack = function(cell){
+    return cell.bottom != null && cell.top != null;
+};
+
+my_game.rules.moveStack = function(cell_source, cell_destination){
+    my_game.debug.assert( my_game.rules.cellHasStack(cell_source), "cell_source has stack");
+    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
 
     cell_destination.bottom = cell_source.bottom;
     cell_destination.top = cell_source.top;
 
     cell_source.bottom = null;
     cell_source.top = null;
+};
+
+my_game.rules.moveCube = function(cell_source, cell_destination){
+    my_game.debug.assert( my_game.rules.cellHasCube(cell_source), "cell_source has cube");
+    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
+
+    if ( cell_source.top != null ) {
+        cell_destination.bottom = cell_source.top;
+        cell_source.top = null;
+
+    } else {
+        cell_destination.bottom = cell_source.bottom;
+        cell_source.bottom = null;
+    }
 };
 
 my_game.rules.makeAllCubes = function(){

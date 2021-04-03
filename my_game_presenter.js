@@ -17,9 +17,10 @@ my_game.presenter.__initModule = function(){
     // None
 
     my_game.presenter.source_cell = null;
-    my_game.presenter.source_top = null;
-    my_game.presenter.source_bottom = null;
     my_game.presenter.destination_cell = null;
+
+    my_game.presenter.source_cube_selected = false;
+    my_game.presenter.source_stack_selected = false;
 
     my_game.debug.writeMessage( "my_game.presenter.__initModule(): done" );
 };
@@ -30,18 +31,21 @@ my_game.presenter.start = function(){
 
 my_game.presenter.selectCell = function(cell_index){
     const cell = my_game.rules.cells[cell_index];
-    const cell_div = my_game.draw.cells_div[cell_index];
 
     if ( my_game.presenter.source_cell == null && my_game.presenter.destination_cell == null ) {
 
-        if ( ! my_game.rules.iSEmptyCell(cell) ) {
-            my_game.presenter.source_cell = cell;
-            my_game.draw.selectedCellDiv(cell_div, true);
-            if ( my_game.presenter.source_cell.top != null ) {
-                my_game.draw.selectedCellCubesDiv(my_game.presenter.source_cell, true, true);
+        if ( my_game.rules.canBeSourceCell(cell) ) {
 
-            } else {
-                my_game.draw.selectedCellCubesDiv(my_game.presenter.source_cell, false, true);
+            my_game.presenter.source_cell = cell;
+            my_game.draw.selectCell(my_game.presenter.source_cell, true);
+
+            if ( my_game.rules.cellHasStack(my_game.presenter.source_cell) ) {
+                my_game.draw.selectCellStack(my_game.presenter.source_cell, true);
+                my_game.presenter.source_stack_selected = true;
+
+            } else if ( my_game.rules.cellHasCube(my_game.presenter.source_cell) ) {
+                my_game.draw.selectCellCube(my_game.presenter.source_cell, true);
+                my_game.presenter.source_cube_selected = true;
             }
             my_game.debug.writeMessage( "my_game.presenter.selectCell(): source_cell cell.name=" + cell.name );
 
@@ -51,43 +55,48 @@ my_game.presenter.selectCell = function(cell_index){
 
     } else if ( my_game.presenter.destination_cell == null && my_game.presenter.source_cell != cell ) {
 
-        if ( my_game.rules.iSEmptyCell(cell) ) {
+        if ( my_game.rules.canBeDestinationCell(cell) ) {
+
             my_game.presenter.destination_cell = cell;
-            my_game.draw.selectedCellDiv(cell_div, true);
+            my_game.draw.selectCell(my_game.presenter.destination_cell, true);
             my_game.debug.writeMessage( "my_game.presenter.selectCell(): destination_cell cell.name=" + cell.name );
 
-            my_game.rules.moveCell(my_game.presenter.source_cell, my_game.presenter.destination_cell);
+            if ( my_game.presenter.source_stack_selected ) {
+                my_game.rules.moveStack(my_game.presenter.source_cell, my_game.presenter.destination_cell);
 
-            {
-                const cell_source_div = my_game.draw.cells_div[my_game.presenter.source_cell.index];
-                const cell_destination_div = my_game.draw.cells_div[my_game.presenter.destination_cell.index];
-                my_game.draw.selectedCellDiv(cell_source_div, false);
-                my_game.draw.selectedCellDiv(cell_destination_div, false);
+            } else if ( my_game.presenter.source_cube_selected ) {
+                my_game.rules.moveCube(my_game.presenter.source_cell, my_game.presenter.destination_cell);
             }
 
+            my_game.draw.selectCell(my_game.presenter.source_cell, false);
+            my_game.draw.selectCell(my_game.presenter.destination_cell, false);
             my_game.presenter.source_cell = null;
             my_game.presenter.destination_cell = null;
-            my_game.draw.setAllCellsDiv();
+            my_game.presenter.source_stack_selected = false;
+            my_game.presenter.source_cube_selected = false;
+
+            my_game.draw.updateAllCells();
 
         } else {
             my_game.debug.writeMessage( "my_game.presenter.selectCell(): ignored empty cell.name=" + cell.name );
         }
 
     } else if ( my_game.presenter.source_cell == cell && my_game.presenter.destination_cell == null ) {
-        my_game.draw.selectedCellDiv(cell_div, false);
-        if ( my_game.presenter.source_cell.top != null ) {
-            my_game.draw.selectedCellCubesDiv(my_game.presenter.source_cell, false, false);
+        my_game.draw.selectCell(my_game.presenter.source_cell, false);
+
+        if ( my_game.rules.cellHasStack(my_game.presenter.source_cell) ) {
+            my_game.draw.selectCellStack(my_game.presenter.source_cell, false);
 
         } else {
-            my_game.draw.selectedCellCubesDiv(my_game.presenter.source_cell, false, false);
+            my_game.draw.selectCellCube(my_game.presenter.source_cell, false);
         }
 
         my_game.presenter.source_cell = null;
         my_game.debug.writeMessage( "my_game.presenter.selectCell(): source_cell null" );
 
     } else if ( my_game.presenter.destination_cell == cell && my_game.presenter.source_cell != null ) {
+        my_game.draw.selectCell(my_game.presenter.destination_cell, false);
         my_game.presenter.destination_cell = null;
-        my_game.draw.selectedCellDiv(cell_div, false);
         my_game.debug.writeMessage( "my_game.presenter.selectCell(): destination_cell null" );
 
     } else {

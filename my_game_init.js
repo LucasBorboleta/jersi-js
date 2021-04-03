@@ -34,7 +34,7 @@ my_game.startGame = function(){
 
     my_game.draw.makeAllCellsDiv();
     my_game.draw.makeAllCubesDiv();
-    my_game.draw.setAllCellsDiv();
+    my_game.draw.updateAllCells();
 
     my_game.presenter.start();
 
