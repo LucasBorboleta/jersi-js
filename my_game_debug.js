@@ -29,7 +29,7 @@ my_game.debug.assert = function(condition, message){
 
     console.assert(condition, message);
     if ( ! condition ) {
-        my_game.debug.writeMessage("assertion failed: " + assert_message);
+        my_game.debug.writeMessage("assertion failed: " + message);
     }
 };
 

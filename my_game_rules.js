@@ -46,6 +46,8 @@ my_game.rules.__initModule = function(){
 
     my_game.rules.cells = [];
     my_game.rules.cubes = [];
+    
+    my_game.rules.game_is_running = false;
 
     my_game.debug.writeMessage( "my_game.rules.__initModule(): done" );
 };
@@ -69,6 +71,18 @@ my_game.rules.getCube = function(cube_name){
     return my_game.rules.cubes.find(function(cube, index, array){ return cube.name === cube_name; });
 };
 
+my_game.rules.startGame = function(){
+    my_game.rules.makeAllCells();
+    my_game.rules.makeAllCubes();
+    my_game.rules.restartGame();
+};
+
+my_game.rules.restartGame = function(){
+    my_game.rules.clearAllCells();
+    my_game.rules.setAllCubes();
+    my_game.rules.game_is_running = true;
+};
+
 my_game.rules.makeAllCells = function(){
 
     for ( const x of my_game.rules.xIndices ) {
@@ -84,6 +98,12 @@ my_game.rules.makeAllCells = function(){
         }
     }
 }
+
+my_game.rules.clearCell = function(cell){ cell.bottom = null;  cell.top = null; }
+
+my_game.rules.clearAllCells = function(){
+    my_game.rules.cells.forEach(my_game.rules.clearCell);
+};
 
 my_game.rules.iSEmptyCell = function(cell){
     return cell.bottom == null && cell.top == null;

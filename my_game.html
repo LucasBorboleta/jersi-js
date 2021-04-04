@@ -8,7 +8,7 @@
 	<title>MyGame</title>
 </head>
 
-<body onload="my_game.__initModule(); my_game.start();">
+<body onload="my_game.__initModule(); my_game.presenter.startGame();">
 
 	<div id="my_game_zone" >
 
@@ -31,12 +31,17 @@
 
 				<div class="my_game_buttonGroup_class">
 
+					<button class="my_game_button_class" type="button" id="my_game_button_confirmTurn"
+						onclick="my_game.presenter.confirmTurn()">OK</button>
+
+					<button class="my_game_button_class" type="button" id="my_game_button_cancelTurn"
+						onclick="my_game.presenter.cancelTurn()">Undo</button>
+
 					<button class="my_game_button_class" type="button" id="my_game_button_toogleCellNames"
-						onclick="my_game.draw.toogleCellDivNames()">Toogle cell names</button>
+						onclick="my_game.draw.toogleCellDivNames()">Coordinates</button>
 
-					<button class="my_game_button_class" type="button" id="my_game_button_restartGame">Restart</button>
-
-					<button class="my_game_button_class" type="button" id="my_game_button_resumeGame">Resume</button>
+					<button class="my_game_button_class" type="button" id="my_game_button_restartGame"
+						onclick="my_game.presenter.restartGame()">Restart</button>
 				</div>
 
 			<div class="my_game_debugZone_class" id="my_game_debugZone">

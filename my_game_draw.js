@@ -20,7 +20,7 @@ my_game.draw.__initModule = function(){
     my_game.debug.assert(my_game.draw.drawZone.clientWidth === my_game.draw.drawZone.clientHeight, "drawZone.clientWidth === drawZone.clientHeight");
     my_game.draw.board_size = my_game.draw.drawZone.clientWidth;
     my_game.draw.cell_size = my_game.draw.board_size / my_game.rules.cellsPerSide;
-    my_game.draw.cell_epsilon = 3;
+    my_game.draw.cell_epsilon = 4;
     my_game.draw.cube_size = ((my_game.draw.cell_size - 3*my_game.draw.cell_epsilon)/2);
 
     my_game.draw.CubeDivLocation = { BOTTOM:0, MIDDLE:1, TOP:2 };
@@ -155,14 +155,14 @@ my_game.draw.makeAllCubesDiv = function(){
 my_game.draw.makeCubeDiv = function(cell_div, cube_div_location, cube_div_prefix){
 
     const cube_div_suffix = Object.keys(my_game.draw.CubeDivLocation)[cube_div_location];
-    const cube_left = my_game.draw.cube_size/2;
+    const cube_left = (my_game.draw.cell_size - my_game.draw.cube_size)/2;
     let cube_top = 0;
 
     if ( cube_div_location === my_game.draw.CubeDivLocation.BOTTOM ) {
-        cube_top = my_game.draw.cell_size/2 + my_game.draw.cell_epsilon/2;
+        cube_top = my_game.draw.cell_size - my_game.draw.cube_size - my_game.draw.cell_epsilon;
 
     } else if ( cube_div_location === my_game.draw.CubeDivLocation.MIDDLE ) {
-        cube_top = my_game.draw.cell_size/2 - my_game.draw.cube_size/2;
+        cube_top = (my_game.draw.cell_size - my_game.draw.cube_size)/2;
 
     } else if ( cube_div_location === my_game.draw.CubeDivLocation.TOP ) {
         cube_top = my_game.draw.cell_epsilon;

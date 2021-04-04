@@ -16,32 +16,48 @@ my_game.presenter.__initModule = function(){
     // Init inner classes
     // None
 
-    my_game.presenter.game_is_running = false;
-
     my_game.presenter.source_cell = null;
     my_game.presenter.destination_cell = null;
-
     my_game.presenter.source_cube_selected = false;
     my_game.presenter.source_stack_selected = false;
 
     my_game.debug.writeMessage( "my_game.presenter.__initModule(): done" );
 };
 
-my_game.presenter.start = function(){
-    my_game.rules.makeAllCells();
-    my_game.rules.makeAllCubes();
-    my_game.rules.setAllCubes();
+my_game.presenter.clearSelection = function(){
+    my_game.presenter.source_cell = null;
+    my_game.presenter.destination_cell = null;
+
+    my_game.presenter.source_cube_selected = false;
+    my_game.presenter.source_stack_selected = false;
+};
+
+my_game.presenter.startGame = function(){
+    my_game.rules.startGame();
 
     my_game.draw.makeAllCellsDiv();
     my_game.draw.makeAllCubesDiv();
-    my_game.draw.updateAllCellsDiv();
 
-    my_game.presenter.game_is_running = true;
+    my_game.presenter.restartGame();
+};
+
+my_game.presenter.restartGame = function(){
+    my_game.presenter.clearSelection();
+    my_game.rules.restartGame();
+    my_game.draw.updateAllCellsDiv();
+};
+
+my_game.presenter.confirmTurn = function(){
+    my_game.debug.writeMessage( "my_game.presenter.confirmTurn(): done" );
+};
+
+my_game.presenter.cancelTurn = function(){
+    my_game.debug.writeMessage( "my_game.presenter.cancelTurn(): done" );
 };
 
 my_game.presenter.selectCell = function(cell_index){
 
-    if ( ! my_game.presenter.game_is_running ) {
+    if ( ! my_game.rules.game_is_running ) {
         return;
     }
 

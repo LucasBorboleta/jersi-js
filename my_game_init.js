@@ -27,7 +27,4 @@ my_game.__initModule = function(){
     my_game.debug.writeMessage( "my_game.__initModule(): done" );
 };
 
-my_game.start = function(){
-    my_game.presenter.start();
-};
 ///////////////////////////////////////////////////////////////////////////////
