@@ -76,17 +76,6 @@
     outline-width:2px !important; */
 }
 
-.my_game_cube_unselected_class{
-}
-
-.my_game_cube_selected_class{
-    box-shadow: 8px 8px 8px black !important;
-    transform: scale(1.25) !important;
-    outline-style:outset !important;
-    outline-color:white !important;
-    outline-width:2px !important;
-}
-
 .my_game_cell_name_class{
     text-align:left;
     font-size:60%;
@@ -124,6 +113,20 @@
     background-size:cover; /* Resize the background image to cover the entire container */
 
     position:absolute;
+
+    transition-property:all;
+    transition-duration: 300ms;
+}
+
+.my_game_cube_unselected_class{
+}
+
+.my_game_cube_selected_class{
+    box-shadow: 8px 8px 8px black !important;
+    transform: scale(1.25) !important;
+    outline-style:outset !important;
+    outline-color:white !important;
+    outline-width:2px !important;
 }
 
 .my_game_cube_void_class{

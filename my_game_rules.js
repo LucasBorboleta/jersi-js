@@ -46,7 +46,9 @@ my_game.rules.__initModule = function(){
 
     my_game.rules.cells = [];
     my_game.rules.cubes = [];
-    
+
+    my_game.rules.saved_cells = [];
+
     my_game.rules.game_is_running = false;
 
     my_game.debug.writeMessage( "my_game.rules.__initModule(): done" );
@@ -80,7 +82,36 @@ my_game.rules.startGame = function(){
 my_game.rules.restartGame = function(){
     my_game.rules.clearAllCells();
     my_game.rules.setAllCubes();
+    my_game.rules.saveGame();
     my_game.rules.game_is_running = true;
+};
+
+my_game.rules.saveGame = function(){
+    my_game.rules.saveAllCells();
+};
+
+my_game.rules.loadGame = function(){
+    my_game.rules.loadAllCells();
+};
+
+my_game.rules.saveCell = function(cell){
+    const saved_cell = {cell:cell, bottom:cell.bottom, top:cell.top};
+    my_game.rules.saved_cells.push(saved_cell);
+}
+
+my_game.rules.loadCell = function(saved_cell){
+    const cell = saved_cell.cell;
+    cell.bottom = saved_cell.bottom;
+    cell.top = saved_cell.top;
+}
+
+my_game.rules.saveAllCells = function(){
+    my_game.rules.saved_cells = [];
+    my_game.rules.cells.forEach(my_game.rules.saveCell);
+};
+
+my_game.rules.loadAllCells = function(){
+    my_game.rules.saved_cells.forEach(my_game.rules.loadCell);
 };
 
 my_game.rules.makeAllCells = function(){

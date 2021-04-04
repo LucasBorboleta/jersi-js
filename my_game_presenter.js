@@ -48,11 +48,13 @@ my_game.presenter.restartGame = function(){
 };
 
 my_game.presenter.confirmTurn = function(){
-    my_game.debug.writeMessage( "my_game.presenter.confirmTurn(): done" );
+    my_game.rules.saveGame();
 };
 
 my_game.presenter.cancelTurn = function(){
-    my_game.debug.writeMessage( "my_game.presenter.cancelTurn(): done" );
+    my_game.presenter.clearSelection();
+    my_game.rules.loadGame();
+    my_game.draw.updateAllCellsDiv();
 };
 
 my_game.presenter.selectCell = function(cell_index){
