@@ -16,6 +16,8 @@ my_game.presenter.__initModule = function(){
     // Init inner classes
     // None
 
+    my_game.presenter.game_is_running = false;
+
     my_game.presenter.source_cell = null;
     my_game.presenter.destination_cell = null;
 
@@ -26,82 +28,87 @@ my_game.presenter.__initModule = function(){
 };
 
 my_game.presenter.start = function(){
-    my_game.debug.writeMessage( "my_game.presenter.start(): done" );
+    my_game.rules.makeAllCells();
+    my_game.rules.makeAllCubes();
+    my_game.rules.setAllCubes();
+
+    my_game.draw.makeAllCellsDiv();
+    my_game.draw.makeAllCubesDiv();
+    my_game.draw.updateAllCellsDiv();
+
+    my_game.presenter.game_is_running = true;
 };
 
 my_game.presenter.selectCell = function(cell_index){
+
+    if ( ! my_game.presenter.game_is_running ) {
+        return;
+    }
+
     const cell = my_game.rules.cells[cell_index];
 
     if ( my_game.presenter.source_cell == null && my_game.presenter.destination_cell == null ) {
 
-        if ( my_game.rules.canBeSourceCell(cell) ) {
+        if ( my_game.rules.isSelectableSourceCell(cell) ) {
 
             my_game.presenter.source_cell = cell;
-            my_game.draw.selectCell(my_game.presenter.source_cell, true);
+            my_game.draw.selectCellDiv(my_game.presenter.source_cell, true);
 
-            if ( my_game.rules.cellHasStack(my_game.presenter.source_cell) ) {
-                my_game.draw.selectCellStack(my_game.presenter.source_cell, true);
+            if ( my_game.rules.cellHasSelectableStack(my_game.presenter.source_cell) ) {
                 my_game.presenter.source_stack_selected = true;
+                my_game.draw.selectCellStackDiv(my_game.presenter.source_cell, true);
 
-            } else if ( my_game.rules.cellHasCube(my_game.presenter.source_cell) ) {
-                my_game.draw.selectCellCube(my_game.presenter.source_cell, true);
+            } else if ( my_game.rules.cellHasSelectableCube(my_game.presenter.source_cell) ) {
                 my_game.presenter.source_cube_selected = true;
+                my_game.draw.selectCellCubeDiv(my_game.presenter.source_cell, true);
             }
-            my_game.debug.writeMessage( "my_game.presenter.selectCell(): source_cell cell.name=" + cell.name );
-
-        } else {
-            my_game.debug.writeMessage( "my_game.presenter.selectCell(): ignored empty cell.name=" + cell.name );
         }
 
     } else if ( my_game.presenter.destination_cell == null && my_game.presenter.source_cell != cell ) {
 
-        if ( my_game.rules.canBeDestinationCell(cell) ) {
+        if ( my_game.rules.isSelectableDestinationCell(cell) ) {
 
             my_game.presenter.destination_cell = cell;
-            my_game.draw.selectCell(my_game.presenter.destination_cell, true);
-            my_game.debug.writeMessage( "my_game.presenter.selectCell(): destination_cell cell.name=" + cell.name );
+            my_game.draw.selectCellDiv(my_game.presenter.destination_cell, true);
 
             if ( my_game.presenter.source_stack_selected ) {
+                my_game.presenter.source_stack_selected = false;
+                my_game.draw.selectCellStackDiv(my_game.presenter.source_cell, false);
                 my_game.rules.moveStack(my_game.presenter.source_cell, my_game.presenter.destination_cell);
 
             } else if ( my_game.presenter.source_cube_selected ) {
+                my_game.presenter.source_cube_selected = false;
+                my_game.draw.selectCellCubeDiv(my_game.presenter.source_cell, false);
                 my_game.rules.moveCube(my_game.presenter.source_cell, my_game.presenter.destination_cell);
             }
 
-            my_game.draw.selectCell(my_game.presenter.source_cell, false);
-            my_game.draw.selectCell(my_game.presenter.destination_cell, false);
+            my_game.draw.selectCellDiv(my_game.presenter.source_cell, false);
+            my_game.draw.selectCellDiv(my_game.presenter.destination_cell, false);
             my_game.presenter.source_cell = null;
             my_game.presenter.destination_cell = null;
-            my_game.presenter.source_stack_selected = false;
-            my_game.presenter.source_cube_selected = false;
 
-            my_game.draw.updateAllCells();
-
-        } else {
-            my_game.debug.writeMessage( "my_game.presenter.selectCell(): ignored empty cell.name=" + cell.name );
+            my_game.draw.updateAllCellsDiv();
         }
 
     } else if ( my_game.presenter.source_cell == cell && my_game.presenter.destination_cell == null ) {
-        my_game.draw.selectCell(my_game.presenter.source_cell, false);
 
-        if ( my_game.rules.cellHasStack(my_game.presenter.source_cell) ) {
-            my_game.draw.selectCellStack(my_game.presenter.source_cell, false);
+        if ( my_game.presenter.source_stack_selected ) {
 
-        } else {
-            my_game.draw.selectCellCube(my_game.presenter.source_cell, false);
+            my_game.presenter.source_stack_selected = false;
+            my_game.draw.selectCellStackDiv(my_game.presenter.source_cell, false);
+
+            if ( my_game.rules.cellHasSelectableCube(my_game.presenter.source_cell) ) {
+                my_game.presenter.source_cube_selected = true;
+                my_game.draw.selectCellCubeDiv(my_game.presenter.source_cell, true);
+            }
+
+        } else if ( my_game.presenter.source_cube_selected ) {
+
+            my_game.presenter.source_cube_selected = false;
+            my_game.draw.selectCellCubeDiv(my_game.presenter.source_cell, false);
+            my_game.draw.selectCellDiv(my_game.presenter.source_cell, false);
+            my_game.presenter.source_cell = null;
         }
-
-        my_game.presenter.source_cell = null;
-        my_game.debug.writeMessage( "my_game.presenter.selectCell(): source_cell null" );
-
-    } else if ( my_game.presenter.destination_cell == cell && my_game.presenter.source_cell != null ) {
-        my_game.draw.selectCell(my_game.presenter.destination_cell, false);
-        my_game.presenter.destination_cell = null;
-        my_game.debug.writeMessage( "my_game.presenter.selectCell(): destination_cell null" );
-
-    } else {
-        my_game.debug.writeMessage( "my_game.presenter.selectCell(): ignored cell.name=" + cell.name );
     }
 };
-
 //////////////////////////////////////////////////////////////////////////

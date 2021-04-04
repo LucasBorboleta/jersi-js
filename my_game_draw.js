@@ -94,7 +94,7 @@ my_game.draw.makeCellDiv = function(cell){
     return cell_div;
 };
 
-my_game.draw.selectCell = function(cell, condition){
+my_game.draw.selectCellDiv = function(cell, condition){
 
     const cell_div = my_game.draw.cells_div[cell.index];
 
@@ -105,7 +105,7 @@ my_game.draw.selectCell = function(cell, condition){
     }
 };
 
-my_game.draw.selectCellCube = function(cell, condition){
+my_game.draw.selectCellCubeDiv = function(cell, condition){
     my_game.debug.assert( my_game.rules.cellHasCube(cell), "cell_source has cube");
 
     if ( cell.top !== null ) {
@@ -118,7 +118,7 @@ my_game.draw.selectCellCube = function(cell, condition){
     }
 };
 
-my_game.draw.selectCellStack = function(cell, condition){
+my_game.draw.selectCellStackDiv = function(cell, condition){
     my_game.debug.assert( my_game.rules.cellHasStack(cell), "cell_source has stack");
 
     const cube_div_top = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.TOP];
@@ -182,14 +182,14 @@ my_game.draw.makeCubeDiv = function(cell_div, cube_div_location, cube_div_prefix
     return cube_div;
 };
 
-my_game.draw.updateAllCells = function(){
+my_game.draw.updateAllCellsDiv = function(){
 
     for ( const cell of my_game.rules.cells ) {
-        my_game.draw.updateCell(cell);
+        my_game.draw.updateCellDiv(cell);
     }
 };
 
-my_game.draw.updateCell = function(cell){
+my_game.draw.updateCellDiv = function(cell){
 
     const cell_div_index = cell.index;
 
@@ -213,7 +213,7 @@ my_game.draw.updateCell = function(cell){
         my_game.draw.setCubeDiv(cube_div_bottom, cell.bottom.color, cell.bottom.sort);
 
     } else {
-        my_game.debug.assert(false, "my_game.draw.updateCell(): failed");
+        my_game.debug.assert(false, "my_game.draw.updateCellDiv(): failed");
     }
 };
 

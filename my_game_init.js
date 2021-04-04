@@ -27,17 +27,7 @@ my_game.__initModule = function(){
     my_game.debug.writeMessage( "my_game.__initModule(): done" );
 };
 
-my_game.startGame = function(){
-    my_game.rules.makeAllCells();
-    my_game.rules.makeAllCubes();
-    my_game.rules.setAllCubes();
-
-    my_game.draw.makeAllCellsDiv();
-    my_game.draw.makeAllCubesDiv();
-    my_game.draw.updateAllCells();
-
+my_game.start = function(){
     my_game.presenter.start();
-
-    my_game.debug.writeMessage( "my_game.startGame(): done" );
 };
 ///////////////////////////////////////////////////////////////////////////////

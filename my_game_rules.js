@@ -89,20 +89,28 @@ my_game.rules.iSEmptyCell = function(cell){
     return cell.bottom == null && cell.top == null;
 };
 
-my_game.rules.canBeSourceCell = function(cell){
-    return ! my_game.rules.iSEmptyCell(cell);
-};
-
-my_game.rules.canBeDestinationCell = function(cell){
-    return my_game.rules.iSEmptyCell(cell);
-};
-
 my_game.rules.cellHasCube = function(cell){
     return cell.bottom != null || cell.top != null;
 };
 
 my_game.rules.cellHasStack = function(cell){
     return cell.bottom != null && cell.top != null;
+};
+
+my_game.rules.cellHasSelectableCube = function(cell){
+    return my_game.rules.cellHasCube(cell);
+};
+
+my_game.rules.cellHasSelectableStack = function(cell){
+    return my_game.rules.cellHasStack(cell);
+};
+
+my_game.rules.isSelectableSourceCell = function(cell){
+    return ! my_game.rules.iSEmptyCell(cell);
+};
+
+my_game.rules.isSelectableDestinationCell = function(cell){
+    return my_game.rules.iSEmptyCell(cell);
 };
 
 my_game.rules.moveStack = function(cell_source, cell_destination){
