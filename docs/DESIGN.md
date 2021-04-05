@@ -24,3 +24,17 @@ $$
 $$
 
 So the width $W$ is greater than the height $H$ for about 10%.
+
+From the board width $W$ one can retrieve the hexagon width $w$, and its height $h$ and side $s$:
+$$
+(w, h, s)=(\frac{W}{9},\frac{W}{9}\frac{2\sqrt{3]}}{3},\frac{W}{9}\frac{\sqrt{3]}}{3})
+$$
+Inserting two squares of side $c$, separated each other by $\epsilon$, inside an hexagon, implies the following constraint on the square side $c$:
+$$
+c=\frac{h-\epsilon}{1+tg(\frac{\pi}{6})}=\frac{h-\epsilon}{1+\frac{\sqrt{3}}{3}}
+$$
+In turn, inserting two squares of side $c$, separated each other by $\epsilon$, inside a squared box of side $b$, the inner squares being distant by $\epsilon$ from the enclosing box, implies the following constraint on such box:
+$$
+b=2c+3\epsilon
+$$
+Such enclosing box and the hexagon must have the same center.
