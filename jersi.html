@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="./jersi.css">
+	<title>MyGame</title>
+</head>
+
+<body onload="jersi.__initModule(); jersi.presenter.startGame();">
+
+	<div id="jersi_zone" >
+
+		<div class="jersi_column_class">
+			<div class="jersi_drawZone_class" id="jersi_drawZone">
+			</div>
+		</div>
+
+		<div class="jersi_column_class">
+
+			<p id="jersi_text_pleaseWait">Please wait, MyGame files are being loaded ...</p>
+
+			<div id="jersi_buttonZone" class="jersi_buttonZone_class">
+
+				<div class="jersi_logo_class">
+					<span>&#11041;&#11042;</span>
+					<span>MyGame</span>
+					<span>&#11041;&#11042;</span>
+				</div>
+
+				<div class="jersi_buttonGroup_class">
+
+					<button class="jersi_button_class" type="button" id="jersi_button_ok"
+						onclick="jersi.presenter.ok()">OK</button>
+
+					<button class="jersi_button_class" type="button" id="jersi_button_undo"
+						onclick="jersi.presenter.undo()">Undo</button>
+
+					<button class="jersi_button_class" type="button" id="jersi_button_toogleCellNames"
+						onclick="jersi.draw.toogleCellDivNames()">Coordinates</button>
+
+					<button class="jersi_button_class" type="button" id="jersi_button_restartGame"
+						onclick="jersi.presenter.restartGame()">Restart</button>
+
+					<button class="jersi_button_class" type="button" id="jersi_button_debug"
+						onclick="jersi.debug.debug()">Debug</button>
+				</div>
+
+			<div class="jersi_debugZone_class" id="jersi_debugZone">
+
+				<div class="jersi_logo_class">
+					<span>&#11041;&#11042;</span>
+					<span>Debug</span>
+					<span>&#11041;&#11042;</span>
+				</div>
+
+				<button class="jersi_button_class" type="button" id="jersi_debug_clearMessages" onclick="jersi.debug.clearMessages()">Clear</button>
+				<span class="jersi_debug_mousePosition_class" id="jersi_debug_mousePosition">Mouse(x,y) = (?, ?)</span>
+				<p class="jersi_debug_messages_class" id="jersi_debug_messages"></p>
+			</div>
+		</div>
+
+		<script src="./jersi_init.js"></script>
+
+    	<script src="./jersi_debug.js"></script>
+    	<script src="./jersi_draw.js"></script>
+		<script src="./jersi_presenter.js"></script>
+		<script src="./jersi_rules.js"></script>
+	<div>
+</body
+
+</html>

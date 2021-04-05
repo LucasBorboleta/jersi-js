@@ -4,7 +4,7 @@
     font-size:18px;
 }
 
-.my_game_button_class{
+.jersi_button_class{
     color:black;
     background-color:khaki;
 
@@ -25,11 +25,11 @@
     outline-width:0px;
 }
 
-.my_game_button_class:disabled{
+.jersi_button_class:disabled{
     opacity:0.5;
 }
 
-.my_game_buttonGroup_class{
+.jersi_buttonGroup_class{
     display:inherit;
 
     padding-left:0px;
@@ -46,7 +46,7 @@
     outline-width:0px;
 }
 
-.my_game_buttonZone_class{
+.jersi_buttonZone_class{
     display:block;
 
     padding-left:0px;
@@ -63,20 +63,20 @@
     outline-width:0px;
 }
 
-.my_game_cell_class{
+.jersi_cell_class{
     position:absolute;
 }
 
-.my_game_cell_selected_class{
+.jersi_cell_selected_class{
     /* outline-style:outset !important;
     outline-color:white !important;
     outline-width:2px !important; */
 }
 
-.my_game_cell_unselected_class{
+.jersi_cell_unselected_class{
 }
 
-.my_game_cell_name_class{
+.jersi_cell_name_class{
     text-align:left;
     font-size:60%;
 
@@ -94,12 +94,12 @@
     outline-width:0px;
 }
 
-.my_game_column_class{
+.jersi_column_class{
     float:left;
     margin-right:20px;
 }
 
-.my_game_cube_class{
+.jersi_cube_class{
     padding:0px;
     margin:0px;
 
@@ -117,7 +117,7 @@
     transition-duration: 300ms;
 }
 
-.my_game_cube_selected_class{
+.jersi_cube_selected_class{
     box-shadow: 8px 8px 8px black !important;
     transform: scale(1.25) !important;
     outline-style:outset !important;
@@ -125,93 +125,93 @@
     outline-width:2px !important;
 }
 
-.my_game_cube_unselected_class{
+.jersi_cube_unselected_class{
 }
 
-.my_game_cube_void_class{
+.jersi_cube_void_class{
     background-image:none;
 }
 
-/* --- MY_GAME_BEGIN: cube sorts  --- */
+/* --- JERSI_BEGIN: cube sorts  --- */
 
-.my_game_cube_king_black_class{
+.jersi_cube_king_black_class{
     background-image:url(img/king-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_king_white_class{
+.jersi_cube_king_white_class{
     background-image:url(img/king-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_fool_black_class{
+.jersi_cube_fool_black_class{
     background-image:url(img/fool-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_fool_white_class{
+.jersi_cube_fool_white_class{
     background-image:url(img/fool-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_wise_black_class{
+.jersi_cube_wise_black_class{
     background-image:url(img/wise-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_wise_white_class{
+.jersi_cube_wise_white_class{
     background-image:url(img/wise-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_mountain_black_class{
+.jersi_cube_mountain_black_class{
     background-image:url(img/mountain-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_mountain_white_class{
+.jersi_cube_mountain_white_class{
     background-image:url(img/mountain-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_rock_black_class{
+.jersi_cube_rock_black_class{
     background-image:url(img/rock-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_rock_white_class{
+.jersi_cube_rock_white_class{
     background-image:url(img/rock-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_paper_black_class{
+.jersi_cube_paper_black_class{
     background-image:url(img/paper-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_paper_white_class{
+.jersi_cube_paper_white_class{
     background-image:url(img/paper-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_scissors_black_class{
+.jersi_cube_scissors_black_class{
     background-image:url(img/scissors-black.png);
     box-shadow: 4px 4px 4px black;
 }
 
-.my_game_cube_scissors_white_class{
+.jersi_cube_scissors_white_class{
     background-image:url(img/scissors-white.png);
     box-shadow: 4px 4px 4px black;
 }
 
-/* --- MY_GAME_END: cube sorts  --- */
+/* --- JERSI_END: cube sorts  --- */
 
-.my_game_debug_messages_class{
+.jersi_debug_messages_class{
     color:inherit;
     background-color:inherit;
 }
 
-.my_game_debug_mousePosition_class{
+.jersi_debug_mousePosition_class{
     color:white;
     background-color:black;
 
@@ -232,7 +232,7 @@
     outline-width:0px;
 }
 
-.my_game_debugZone_class{
+.jersi_debugZone_class{
     display:block;
 
     padding-left:0px;
@@ -250,7 +250,7 @@
     outline-width:0px;
 }
 
-.my_game_drawZone_class{
+.jersi_drawZone_class{
     height:600px;
     width:600px;
 
@@ -260,7 +260,7 @@
     outline-style:none;
     outline-width:0px;
 
-    background-image:url(img/my_game_board.png);
+    background-image:url(img/jersi_board.png);
     background-origin:content-box;
     background-position:center;
     background-repeat:no-repeat;
@@ -271,7 +271,7 @@
     position:relative;
 }
 
-.my_game_logo_class{
+.jersi_logo_class{
     color:black;
     background-color:white;
 
