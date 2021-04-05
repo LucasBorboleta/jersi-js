@@ -59,6 +59,8 @@ my_game.draw.__initModule = function(){
     my_game.debug.writeMessage( "my_game.draw.__initModule(): done" );
 };
 
+// --- MY_GAME_BEGIN: makers ---
+
 my_game.draw.makeAllCellsDiv = function(){
 
     for ( const cell of my_game.rules.cells ) {
@@ -92,48 +94,6 @@ my_game.draw.makeCellDiv = function(cell){
     my_game.draw.drawZone.appendChild(cell_div);
 
     return cell_div;
-};
-
-my_game.draw.selectCellDiv = function(cell, condition){
-
-    const cell_div = my_game.draw.cells_div[cell.index];
-
-    if ( condition ) {
-        cell_div.className = cell_div.className.replace("my_game_cell_unselected_class", "my_game_cell_selected_class")
-    } else {
-        cell_div.className = cell_div.className.replace("my_game_cell_selected_class", "my_game_cell_unselected_class")
-    }
-};
-
-my_game.draw.selectCellCubeDiv = function(cell, condition){
-    my_game.debug.assert( my_game.rules.cellHasCube(cell), "cell_source has cube");
-
-    if ( cell.top !== null ) {
-        const cube_div_top = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.TOP];
-        my_game.draw.selectCubeDiv(cube_div_top, condition);
-
-    } else {
-        const cube_div_middle = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.MIDDLE];
-        my_game.draw.selectCubeDiv(cube_div_middle, condition);
-    }
-};
-
-my_game.draw.selectCellStackDiv = function(cell, condition){
-    my_game.debug.assert( my_game.rules.cellHasStack(cell), "cell_source has stack");
-
-    const cube_div_top = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.TOP];
-    my_game.draw.selectCubeDiv(cube_div_top, condition);
-
-    const cube_div_bottom = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.BOTTOM];
-    my_game.draw.selectCubeDiv(cube_div_bottom, condition);
-};
-
-my_game.draw.selectCubeDiv = function(cube_div, condition){
-    if ( condition ) {
-        cube_div.className = cube_div.className.replace("my_game_cube_unselected_class", "my_game_cube_selected_class")
-    } else {
-        cube_div.className = cube_div.className.replace("my_game_cube_selected_class", "my_game_cube_unselected_class")
-    }
 };
 
 my_game.draw.makeAllCubesDiv = function(){
@@ -182,10 +142,100 @@ my_game.draw.makeCubeDiv = function(cell_div, cube_div_location, cube_div_prefix
     return cube_div;
 };
 
+// --- MY_GAME_END: makers ---
+
+// --- MY_GAME_BEGIN: getters ---
+
+my_game.draw.getMousePosition = function(event){
+    const drawZoneRectangle = my_game.draw.drawZone.getBoundingClientRect();
+    return {
+        x: event.clientX - drawZoneRectangle.left,
+        y: event.clientY - drawZoneRectangle.top
+    };
+};
+
+// --- MY_GAME_END: getters ---
+
+// --- MY_GAME_BEGIN: setters ---
+
+my_game.draw.clearCubeDiv = function(cube_div){
+    my_game.draw.setCubeDivClass(cube_div, "my_game_cube_class" +  " " + "my_game_cube_unselected_class" +
+        " " + "my_game_cube_void_class"  );
+};
+
+my_game.draw.hideElement = function(element){ element.style.display = "none";}
+
+my_game.draw.selectCellDiv = function(cell, condition){
+
+    const cell_div = my_game.draw.cells_div[cell.index];
+
+    if ( condition ) {
+        cell_div.className = cell_div.className.replace("my_game_cell_unselected_class", "my_game_cell_selected_class")
+    } else {
+        cell_div.className = cell_div.className.replace("my_game_cell_selected_class", "my_game_cell_unselected_class")
+    }
+};
+
+my_game.draw.selectCellCubeDiv = function(cell, condition){
+    my_game.debug.assert( my_game.rules.cellHasCube(cell), "cell_source has cube");
+
+    if ( cell.top !== null ) {
+        const cube_div_top = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.TOP];
+        my_game.draw.selectCubeDiv(cube_div_top, condition);
+
+    } else {
+        const cube_div_middle = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.MIDDLE];
+        my_game.draw.selectCubeDiv(cube_div_middle, condition);
+    }
+};
+
+my_game.draw.selectCubeDiv = function(cube_div, condition){
+    if ( condition ) {
+        cube_div.className = cube_div.className.replace("my_game_cube_unselected_class", "my_game_cube_selected_class")
+    } else {
+        cube_div.className = cube_div.className.replace("my_game_cube_selected_class", "my_game_cube_unselected_class")
+    }
+};
+
+my_game.draw.selectCellStackDiv = function(cell, condition){
+    my_game.debug.assert( my_game.rules.cellHasStack(cell), "cell_source has stack");
+
+    const cube_div_top = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.TOP];
+    my_game.draw.selectCubeDiv(cube_div_top, condition);
+
+    const cube_div_bottom = my_game.draw.cubes_div[cell.index][my_game.draw.CubeDivLocation.BOTTOM];
+    my_game.draw.selectCubeDiv(cube_div_bottom, condition);
+};
+
+my_game.draw.setCubeDiv = function(cube_div, cube_color, cube_sort){
+    const cube_class = "my_game_cube_class" + " " + "my_game_cube_unselected_class" +
+                        " " + my_game.draw.cube_div_classes[cube_color][cube_sort];
+    my_game.draw.setCubeDivClass(cube_div, cube_class);
+};
+
+my_game.draw.setCubeDivClass = function(cube_div, cube_class){
+    cube_div.className = cube_class;
+};
+
+my_game.draw.showElement = function(element){ element.style.display = "inherit";}
+
 my_game.draw.updateAllCellsDiv = function(){
 
     for ( const cell of my_game.rules.cells ) {
         my_game.draw.updateCellDiv(cell);
+    }
+};
+
+my_game.draw.toogleCellDivNames = function(){
+
+    const label_elements = document.getElementsByClassName("my_game_cell_name_class");
+
+    my_game.draw.labels_are_displayed = ! my_game.draw.labels_are_displayed;
+
+    if ( my_game.draw.labels_are_displayed ) {
+        Array.from(label_elements).forEach(my_game.draw.showElement);
+    } else {
+        Array.from(label_elements).forEach(my_game.draw.hideElement);
     }
 };
 
@@ -217,42 +267,6 @@ my_game.draw.updateCellDiv = function(cell){
     }
 };
 
-my_game.draw.setCubeDiv = function(cube_div, cube_color, cube_sort){
-    const cube_class = "my_game_cube_class" + " " + "my_game_cube_unselected_class" +
-                        " " + my_game.draw.cube_div_classes[cube_color][cube_sort];
-    my_game.draw.setCubeDivClass(cube_div, cube_class);
-};
+// --- MY_GAME_END: setters ---
 
-my_game.draw.setCubeDivClass = function(cube_div, cube_class){
-    cube_div.className = cube_class;
-};
-
-my_game.draw.clearCubeDiv = function(cube_div){
-    my_game.draw.setCubeDivClass(cube_div, "my_game_cube_class" +  " " + "my_game_cube_unselected_class" +
-        " " + "my_game_cube_void_class"  );
-};
-
-my_game.draw.showElement = function(element){ element.style.display = "inherit";}
-my_game.draw.hideElement = function(element){ element.style.display = "none";}
-
-my_game.draw.toogleCellDivNames = function(){
-
-    const label_elements = document.getElementsByClassName("my_game_cell_name_class");
-
-    my_game.draw.labels_are_displayed = ! my_game.draw.labels_are_displayed;
-
-    if ( my_game.draw.labels_are_displayed ) {
-        Array.from(label_elements).forEach(my_game.draw.showElement);
-    } else {
-        Array.from(label_elements).forEach(my_game.draw.hideElement);
-    }
-};
-
-my_game.draw.getMousePosition = function(event){
-    const drawZoneRectangle = my_game.draw.drawZone.getBoundingClientRect();
-    return {
-        x: event.clientX - drawZoneRectangle.left,
-        y: event.clientY - drawZoneRectangle.top
-    };
-};
 ///////////////////////////////////////////////////////////////////////////////

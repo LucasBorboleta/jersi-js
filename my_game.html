@@ -31,17 +31,20 @@
 
 				<div class="my_game_buttonGroup_class">
 
-					<button class="my_game_button_class" type="button" id="my_game_button_confirmTurn"
-						onclick="my_game.presenter.confirmTurn()">OK</button>
+					<button class="my_game_button_class" type="button" id="my_game_button_ok"
+						onclick="my_game.presenter.ok()">OK</button>
 
-					<button class="my_game_button_class" type="button" id="my_game_button_cancelTurn"
-						onclick="my_game.presenter.cancelTurn()">Undo</button>
+					<button class="my_game_button_class" type="button" id="my_game_button_undo"
+						onclick="my_game.presenter.undo()">Undo</button>
 
 					<button class="my_game_button_class" type="button" id="my_game_button_toogleCellNames"
 						onclick="my_game.draw.toogleCellDivNames()">Coordinates</button>
 
 					<button class="my_game_button_class" type="button" id="my_game_button_restartGame"
 						onclick="my_game.presenter.restartGame()">Restart</button>
+
+					<button class="my_game_button_class" type="button" id="my_game_button_debug"
+						onclick="my_game.debug.debug()">Debug</button>
 				</div>
 
 			<div class="my_game_debugZone_class" id="my_game_debugZone">

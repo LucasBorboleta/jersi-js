@@ -10,8 +10,6 @@ my_game.__initModule = function(){
 
     // Init required packages
     my_game.debug.__initModule();
-    my_game.debug.enable( true );
-
     my_game.draw.__initModule();
     my_game.presenter.__initModule();
     my_game.rules.__initModule();
@@ -26,5 +24,4 @@ my_game.__initModule = function(){
 
     my_game.debug.writeMessage( "my_game.__initModule(): done" );
 };
-
 ///////////////////////////////////////////////////////////////////////////////

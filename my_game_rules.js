@@ -54,15 +54,22 @@ my_game.rules.__initModule = function(){
     my_game.debug.writeMessage( "my_game.rules.__initModule(): done" );
 };
 
-my_game.rules.getCubeColorAndSort = function(cube_label){
-    for ( const cube_color of Object.values(my_game.rules.CubeColor) ) {
-        for ( const cube_sort of Object.values(my_game.rules.CubeSort) ) {
-            if ( my_game.rules.CubeLabel[cube_color][cube_sort] === cube_label ) {
-                return {color: cube_color, sort: cube_sort};
-            }
-        }
-    }
-    my_game.debug.assert(false, "my_game.rules.getCubeColorAndSort(): failed");
+// --- MY_GAME_BEGIN: getters ---
+
+my_game.rules.cellHasCube = function(cell){
+    return cell.bottom != null || cell.top != null;
+};
+
+my_game.rules.cellHasSelectableCube = function(cell){
+    return my_game.rules.cellHasCube(cell);
+};
+
+my_game.rules.cellHasSelectableStack = function(cell){
+    return my_game.rules.cellHasStack(cell);
+};
+
+my_game.rules.cellHasStack = function(cell){
+    return cell.bottom != null && cell.top != null;
 };
 
 my_game.rules.getCell = function(cell_name){
@@ -73,46 +80,31 @@ my_game.rules.getCube = function(cube_name){
     return my_game.rules.cubes.find(function(cube, index, array){ return cube.name === cube_name; });
 };
 
-my_game.rules.startGame = function(){
-    my_game.rules.makeAllCells();
-    my_game.rules.makeAllCubes();
-    my_game.rules.restartGame();
+my_game.rules.getCubeColorAndSort = function(cube_label){
+    for ( const cube_color of Object.values(my_game.rules.CubeColor) ) {
+        for ( const cube_sort of Object.values(my_game.rules.CubeSort) ) {
+            if ( my_game.rules.CubeLabel[cube_color][cube_sort] === cube_label ) {
+                return {color: cube_color, sort: cube_sort};
+            }
+        }
+    }
+    my_game.debug.assert(false, "my_game.rules.getCubeColorAndSort(): failed");
+};
+my_game.rules.iSEmptyCell = function(cell){
+    return cell.bottom == null && cell.top == null;
 };
 
-my_game.rules.restartGame = function(){
-    my_game.rules.clearAllCells();
-    my_game.rules.setAllCubes();
-    my_game.rules.saveGame();
-    my_game.rules.game_is_running = true;
+my_game.rules.isSelectableDestinationCell = function(cell){
+    return my_game.rules.iSEmptyCell(cell);
 };
 
-my_game.rules.saveGame = function(){
-    my_game.rules.saveAllCells();
+my_game.rules.isSelectableSourceCell = function(cell){
+    return ! my_game.rules.iSEmptyCell(cell);
 };
 
-my_game.rules.loadGame = function(){
-    my_game.rules.loadAllCells();
-};
+// --- MY_GAME_END: getters ---
 
-my_game.rules.saveCell = function(cell){
-    const saved_cell = {cell:cell, bottom:cell.bottom, top:cell.top};
-    my_game.rules.saved_cells.push(saved_cell);
-}
-
-my_game.rules.loadCell = function(saved_cell){
-    const cell = saved_cell.cell;
-    cell.bottom = saved_cell.bottom;
-    cell.top = saved_cell.top;
-}
-
-my_game.rules.saveAllCells = function(){
-    my_game.rules.saved_cells = [];
-    my_game.rules.cells.forEach(my_game.rules.saveCell);
-};
-
-my_game.rules.loadAllCells = function(){
-    my_game.rules.saved_cells.forEach(my_game.rules.loadCell);
-};
+// --- MY_GAME_BEGIN: makers ---
 
 my_game.rules.makeAllCells = function(){
 
@@ -129,65 +121,6 @@ my_game.rules.makeAllCells = function(){
         }
     }
 }
-
-my_game.rules.clearCell = function(cell){ cell.bottom = null;  cell.top = null; }
-
-my_game.rules.clearAllCells = function(){
-    my_game.rules.cells.forEach(my_game.rules.clearCell);
-};
-
-my_game.rules.iSEmptyCell = function(cell){
-    return cell.bottom == null && cell.top == null;
-};
-
-my_game.rules.cellHasCube = function(cell){
-    return cell.bottom != null || cell.top != null;
-};
-
-my_game.rules.cellHasStack = function(cell){
-    return cell.bottom != null && cell.top != null;
-};
-
-my_game.rules.cellHasSelectableCube = function(cell){
-    return my_game.rules.cellHasCube(cell);
-};
-
-my_game.rules.cellHasSelectableStack = function(cell){
-    return my_game.rules.cellHasStack(cell);
-};
-
-my_game.rules.isSelectableSourceCell = function(cell){
-    return ! my_game.rules.iSEmptyCell(cell);
-};
-
-my_game.rules.isSelectableDestinationCell = function(cell){
-    return my_game.rules.iSEmptyCell(cell);
-};
-
-my_game.rules.moveStack = function(cell_source, cell_destination){
-    my_game.debug.assert( my_game.rules.cellHasStack(cell_source), "cell_source has stack");
-    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
-
-    cell_destination.bottom = cell_source.bottom;
-    cell_destination.top = cell_source.top;
-
-    cell_source.bottom = null;
-    cell_source.top = null;
-};
-
-my_game.rules.moveCube = function(cell_source, cell_destination){
-    my_game.debug.assert( my_game.rules.cellHasCube(cell_source), "cell_source has cube");
-    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
-
-    if ( cell_source.top != null ) {
-        cell_destination.bottom = cell_source.top;
-        cell_source.top = null;
-
-    } else {
-        cell_destination.bottom = cell_source.bottom;
-        cell_source.bottom = null;
-    }
-};
 
 my_game.rules.makeAllCubes = function(){
     for ( const cube_color of Object.values(my_game.rules.CubeColor) ) {
@@ -216,6 +149,49 @@ my_game.rules.makeAllCubes = function(){
                 my_game.rules.cubes.push(cube);
             }
         }
+    }
+};
+
+// --- MY_GAME_END: makers ---
+
+// --- MY_GAME_BEGIN: setters ---
+
+my_game.rules.clearCell = function(cell){ cell.bottom = null;  cell.top = null; }
+
+my_game.rules.clearAllCells = function(){
+    my_game.rules.cells.forEach(my_game.rules.clearCell);
+};
+
+my_game.rules.moveCube = function(cell_source, cell_destination){
+    my_game.debug.assert( my_game.rules.cellHasCube(cell_source), "cell_source has cube");
+    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
+
+    if ( cell_source.top != null ) {
+        cell_destination.bottom = cell_source.top;
+        cell_source.top = null;
+
+    } else {
+        cell_destination.bottom = cell_source.bottom;
+        cell_source.bottom = null;
+    }
+};
+
+my_game.rules.moveStack = function(cell_source, cell_destination){
+    my_game.debug.assert( my_game.rules.cellHasStack(cell_source), "cell_source has stack");
+    my_game.debug.assert( my_game.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
+
+    cell_destination.bottom = cell_source.bottom;
+    cell_destination.top = cell_source.top;
+
+    cell_source.bottom = null;
+    cell_source.top = null;
+};
+
+my_game.rules.setCube = function(cell, cube){
+    if ( cell.bottom === null ) { cell.bottom = cube; }
+    else if  ( cell.top === null ) { cell.top = cube; }
+    else {
+        my_game.debug.assert(false, "my_game.rules.setCube(): failed");
     }
 };
 
@@ -286,12 +262,51 @@ my_game.rules.setCubeByLabels = function(cell_name, cube_name){
     my_game.rules.setCube(cell, cube);
 };
 
-my_game.rules.setCube = function(cell, cube){
-    if ( cell.bottom === null ) { cell.bottom = cube; }
-    else if  ( cell.top === null ) { cell.top = cube; }
-    else {
-        my_game.debug.assert(false, "my_game.rules.setCube(): failed");
-    }
+// --- MY_GAME_END: setters ---
+
+// --- MY_GAME_BEGIN: starters and savers ---
+
+my_game.rules.startGame = function(){
+    my_game.rules.makeAllCells();
+    my_game.rules.makeAllCubes();
+    my_game.rules.restartGame();
 };
+
+my_game.rules.restartGame = function(){
+    my_game.rules.clearAllCells();
+    my_game.rules.setAllCubes();
+    my_game.rules.saveGame();
+    my_game.rules.game_is_running = true;
+};
+
+my_game.rules.saveGame = function(){
+    my_game.rules.saveAllCells();
+};
+
+my_game.rules.saveCell = function(cell){
+    const saved_cell = {cell:cell, bottom:cell.bottom, top:cell.top};
+    my_game.rules.saved_cells.push(saved_cell);
+}
+
+my_game.rules.saveAllCells = function(){
+    my_game.rules.saved_cells = [];
+    my_game.rules.cells.forEach(my_game.rules.saveCell);
+};
+
+my_game.rules.loadGame = function(){
+    my_game.rules.loadAllCells();
+};
+
+my_game.rules.loadCell = function(saved_cell){
+    const cell = saved_cell.cell;
+    cell.bottom = saved_cell.bottom;
+    cell.top = saved_cell.top;
+}
+
+my_game.rules.loadAllCells = function(){
+    my_game.rules.saved_cells.forEach(my_game.rules.loadCell);
+};
+
+// --- MY_GAME_END: starters and savers ---
 
 //////////////////////////////////////////////////////////////////////////

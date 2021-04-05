@@ -19,7 +19,8 @@ my_game.debug.__initModule = function(){
     my_game.debug.mousePosition = document.getElementById( "my_game_debug_mousePosition" );
 
     my_game.debug.messageCount = 0;
-    my_game.debug.isEnabled = true;
+    my_game.debug.is_enabled = false;
+    my_game.debug.enable(my_game.debug.is_enabled);
 };
 
 my_game.debug.assert = function(condition, message){
@@ -37,14 +38,19 @@ my_game.debug.clearMessages = function(){
     my_game.debug.messages.innerHTML = "" ;
 };
 
-my_game.debug.enable = function(condition){
-    my_game.debug.isEnabled = condition;
+my_game.debug.debug = function(){
+    my_game.debug.is_enabled = ! my_game.debug.is_enabled;
+    my_game.debug.enable(my_game.debug.is_enabled);
+};
 
-    if ( ! my_game.debug.isEnabled ) {
+my_game.debug.enable = function(condition){
+    my_game.debug.is_enabled = condition;
+
+    if ( ! my_game.debug.is_enabled ) {
         my_game.debug.clearMessages();
     }
 
-    if ( my_game.debug.isEnabled ) {
+    if ( my_game.debug.is_enabled ) {
         my_game.debug.zone.style.display = "inherit";
     } else {
         my_game.debug.zone.style.display = "none";
@@ -52,7 +58,7 @@ my_game.debug.enable = function(condition){
 };
 
 my_game.debug.writeMessage = function(text){
-    if ( my_game.debug.isEnabled ) {
+    if ( my_game.debug.is_enabled ) {
         my_game.debug.messageCount += 1 ;
 
         my_game.debug.messages.innerHTML = my_game.debug.messageCount + ":" +
