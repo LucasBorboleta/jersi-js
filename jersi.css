@@ -267,7 +267,7 @@ JERSI-JS-COPYRIGHT-MD-END */
 
 .jersi_drawZone_class{
     height:600px;
-    width:600px;
+    width:668px; /* Use the ratio width = 1.113 * height */
 
     padding:0px;
     margin:2px;
@@ -275,7 +275,7 @@ JERSI-JS-COPYRIGHT-MD-END */
     outline-style:none;
     outline-width:0px;
 
-    background-image:url(img/jersi_rectangular_board.png);
+    background-image:url(img/jersi_board.png);
     background-origin:content-box;
     background-position:center;
     background-repeat:no-repeat;
