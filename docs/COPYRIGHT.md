@@ -1,5 +1,6 @@
 # COPYRIGHT
-JERSI-JS (the program) implements JERSI (the rules), an abstract board game.
+
+The software JERSI-JS implements the rules of JERSI, which is an abstract/strategy board game. This copyright notice only covers the software JERSI-JS. The copyright of the JERSI rules and board game concept can be found at https://github.com/LucasBorboleta/jersi.
 
 Copyright (C) 2021 Lucas Borboleta (lucas.borboleta@free.fr).
 
