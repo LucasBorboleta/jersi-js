@@ -15,23 +15,23 @@ One concludes with a relationship between the width $w$ and the height $h$:
 $$
 \frac{w}{h}=cos (\frac{\pi}{6})=\frac{\sqrt{3}}{2}\approx 0.866
 $$
-The jersi field has a with $W$ equivalent to 9 hexagon widths, and an height $H$ equivalent to 5 hexagon widths plus 4 hexagon sides. It leads to:
+The jersi field has a with $W$ equivalent to 13 hexagon widths, and an height $H$ equivalent to 5 hexagon widths plus 6 hexagon sides. It leads to:
 $$
-(W, H)=(9w, 5h+4s)=(9hcos(\pi/6),(5+4sin(\pi/6))h)
+(W, H)=(12w, 5h+6s)=(12\frac{\sqrt{3}}{2}h,(5+6\frac{1}{2})h)
 $$
 $$
-\frac{W}{H}=\frac{9\sqrt{3}}{14}\approx 1.113
+\frac{W}{H}=\frac{3\sqrt{3}}{4}\approx 1.299
 $$
 
 So the width $W$ is greater than the height $H$ for about 10%.
 
 From the board width $W$ one can retrieve the hexagon width $w$, and its height $h$ and side $s$:
 $$
-(w, h, s)=(\frac{W}{9},\frac{W}{9}\frac{2\sqrt{3]}}{3},\frac{W}{9}\frac{\sqrt{3]}}{3})
+(w, h, s)=(\frac{W}{12},\frac{W}{12}\frac{2\sqrt{3]}}{3},\frac{W}{12}\frac{\sqrt{3]}}{3})
 $$
 Inserting two squares of side $c$, separated each other by $\epsilon$, inside an hexagon, implies the following constraint on the square side $c$:
 $$
-c=\frac{h-\epsilon}{1+tg(\frac{\pi}{6})}=\frac{h-\epsilon}{1+\frac{\sqrt{3}}{3}}
+c=\frac{h-\epsilon}{2+tg(\frac{\pi}{6})}=\frac{h-\epsilon}{2+\frac{\sqrt{3}}{3}}
 $$
 In turn, inserting two squares of side $c$, separated each other by $\epsilon$, inside a squared box of side $b$, the inner squares being distant by $\epsilon$ from the enclosing box, implies the following constraint on such box:
 $$

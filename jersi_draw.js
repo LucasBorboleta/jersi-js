@@ -31,11 +31,21 @@ jersi.draw.__initModule = function(){
 
     jersi.draw.drawZone = document.getElementById( "jersi_drawZone" );
 
-    jersi.debug.assert(jersi.draw.drawZone.clientWidth === jersi.draw.drawZone.clientHeight, "drawZone.clientWidth === drawZone.clientHeight");
-    jersi.draw.board_size = jersi.draw.drawZone.clientWidth;
-    jersi.draw.cell_size = jersi.draw.board_size / jersi.rules.cellsPerSide;
+    {
+        const width_height_ratio = jersi.draw.drawZone.clientWidth/jersi.draw.drawZone.clientHeight;
+        const width_height_ratio_error = Math.abs(width_height_ratio - 3*Math.sqrt(3)/4)
+        jersi.debug.assert(width_height_ratio_error <= 0.001, "drawZone: width_height_ratio");
+    }
+
+    jersi.draw.board_width = jersi.draw.drawZone.clientWidth;
+
+    jersi.draw.hexagon_width = jersi.draw.board_width/12;
+    jersi.draw.hexagon_height = jersi.draw.hexagon_width*2*Math.sqrt(3)/3;
+    jersi.draw.hexagon_side = jersi.draw.hexagon_height/2;
+
     jersi.draw.cell_epsilon = 4;
-    jersi.draw.cube_size = ((jersi.draw.cell_size - 3*jersi.draw.cell_epsilon)/2);
+    jersi.draw.cube_size = (jersi.draw.hexagon_height - jersi.draw.cell_epsilon)/(2 + Math.sqrt(3)/3);
+    jersi.draw.cell_size = 2*jersi.draw.cube_size + 3*jersi.draw.cell_epsilon;
 
     jersi.draw.CubeDivLocation = { BOTTOM:0, MIDDLE:1, TOP:2 };
 
