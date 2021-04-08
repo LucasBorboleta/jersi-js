@@ -95,12 +95,6 @@ jersi.draw.makeAllCellsDiv = function(){
 
 jersi.draw.makeCellDiv = function(cell){
 
-    const cell_text = document.createTextNode(cell.name);
-
-    const cell_paragraph = document.createElement("P");
-    cell_paragraph.className  = "jersi_cell_name_class";
-    cell_paragraph.appendChild(cell_text);
-
     const cell_div = document.createElement("DIV");
     cell_div.id = "jersi_cell_" + cell.name;
 
@@ -119,7 +113,7 @@ jersi.draw.makeCellDiv = function(cell){
         }
     }
 
-    const x_cell_div = x_hexagon + x_shift - jersi.draw.cell_size/2;
+    const x_cell_div = x_hexagon - jersi.draw.cell_size/2 + x_shift;
     const y_cell_div = y_hexagon - jersi.draw.cell_size/2;
 
     cell_div.style.left = Math.floor(x_cell_div) + "px";
@@ -132,6 +126,12 @@ jersi.draw.makeCellDiv = function(cell){
     cell_div.className += " " + "jersi_cell_unselected_class";
 
     if ( ! cell.reserve ) {
+        const cell_text = document.createTextNode(cell.name);
+
+        const cell_paragraph = document.createElement("P");
+        cell_paragraph.className  = "jersi_cell_name_class";
+        cell_paragraph.appendChild(cell_text);
+
         cell_div.appendChild(cell_paragraph);
     }
 
