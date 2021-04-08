@@ -1,6 +1,6 @@
 # DESIGN
 
-## About geometry
+## About sizes
 
 Each hexagon has a vertex pointing on top. Its side $s$, width $w$, and height $h$ are such that their are dimensions $s/2$ , $w/2$, and $h/2$ of a rectangular triangle such that:
 $$
@@ -38,3 +38,19 @@ $$
 b=2c+3\epsilon
 $$
 Such enclosing box and the hexagon must have the same center.
+
+## About coordinates
+
+Abstractly, from the `rules`module, each hexagon is identified by a pair of integers $(u,v)$ in an oblique coordinates system whose origin $(0,0)$ is the central hexagon $C$ of the board.
+
+From the `draw`module, each hexagon is identifies by its center by a pair of reals $(x,y)$, then rounding as pixels, and interpreted in the orthogonal frame of the `HTML div` whose origin $(0,0)$ is top left.
+
+The x-y coordinates of the central hexagon of $C$ are:
+$$
+(x_C, y_C)=(6w,\frac{5}{2}h+3s)
+$$
+The x-y coordinates of the central hexagon of $H$ are:
+$$
+(x_H, y_H)=(x_C, y_C)+u(w,0)+v(w \sin(\frac{\pi}{6}), -w \cos(\frac{\pi}{6}))=(x_C, y_C)+w(u+\frac{v}{2},-v\frac{\sqrt{3}}{2})
+$$
+In turn, the box $B$ enclosing either a cube or a stack of two cubes has same center than the hosting hexagon $H$. But the $left$ and $top$ of the box $B$ are shifted back from $(x_H, y_H)$ by $(-\frac{b}{2},-\frac{b}{2})$.

@@ -103,15 +103,37 @@ jersi.draw.makeCellDiv = function(cell){
 
     const cell_div = document.createElement("DIV");
     cell_div.id = "jersi_cell_" + cell.name;
-    cell_div.style.left = Math.floor(cell.x*jersi.draw.cell_size) + "px";
-    cell_div.style.top = Math.floor(cell.y*jersi.draw.cell_size) + "px";
+
+    const x_central_hexagon = 6*jersi.draw.hexagon_width;
+    const y_central_hexagon = 5/2*jersi.draw.hexagon_height + 3*jersi.draw.hexagon_side;
+
+    const x_hexagon = x_central_hexagon + (cell.u + cell.v/2)*jersi.draw.hexagon_width;
+    const y_hexagon = y_central_hexagon - cell.v*Math.sqrt(3)/2*jersi.draw.hexagon_width;
+
+    let x_shift = 0;
+    if ( cell.reserve ) {
+        if ( cell.name === 'a' || cell.name === 'b' || cell.name === 'c' || cell.name === 'd' ) {
+            x_shift = jersi.draw.hexagon_width/2;
+        } else if ( cell.name === 'i' || cell.name === 'h' || cell.name === 'g' || cell.name === 'f' ) {
+            x_shift = -jersi.draw.hexagon_width/2;
+        }
+    }
+
+    const x_cell_div = x_hexagon + x_shift - jersi.draw.cell_size/2;
+    const y_cell_div = y_hexagon - jersi.draw.cell_size/2;
+
+    cell_div.style.left = Math.floor(x_cell_div) + "px";
+    cell_div.style.top = Math.floor(y_cell_div) + "px";
+
     cell_div.style.width = Math.floor(jersi.draw.cell_size) + "px";
     cell_div.style.height = Math.floor(jersi.draw.cell_size) + "px";
 
     cell_div.className = "jersi_cell_class";
     cell_div.className += " " + "jersi_cell_unselected_class";
 
-    cell_div.appendChild(cell_paragraph);
+    if ( ! cell.reserve ) {
+        cell_div.appendChild(cell_paragraph);
+    }
 
     cell_div.onclick = function(){ jersi.presenter.selectCell(cell.index); };
 

@@ -131,10 +131,134 @@ jersi.rules.makeAllCells = function(){
                             name: cell_name,
                             bottom: null,
                             top: null };
-            jersi.rules.cells.push(cell);
         }
     }
+
+    // Row "a"
+    jersi.rules.makeCell( 'a1', [-1, -4] );
+    jersi.rules.makeCell( 'a2', [-0, -4] );
+    jersi.rules.makeCell( 'a3', [1, -4] );
+    jersi.rules.makeCell( 'a4', [2, -4] );
+    jersi.rules.makeCell( 'a5', [3, -4] );
+    jersi.rules.makeCell( 'a6', [4, -4] );
+    jersi.rules.makeCell( 'a7', [5, -4] );
+
+    jersi.rules.makeCell( 'a', [6, -4], true);
+
+    // Row "b"
+    jersi.rules.makeCell( 'b1', [-2, -3] );
+    jersi.rules.makeCell( 'b2', [-1, -3] );
+    jersi.rules.makeCell( 'b3', [0, -3] );
+    jersi.rules.makeCell( 'b4', [1, -3] );
+    jersi.rules.makeCell( 'b5', [2, -3] );
+    jersi.rules.makeCell( 'b6', [3, -3] );
+    jersi.rules.makeCell( 'b7', [4, -3] );
+    jersi.rules.makeCell( 'b8', [5, -3] );
+
+    jersi.rules.makeCell( 'b', [6, -3], true);
+
+    // Row "c"
+    jersi.rules.makeCell( 'c1', [-2, -2] );
+    jersi.rules.makeCell( 'c2', [-1, -2] );
+    jersi.rules.makeCell( 'c3', [0, -2] );
+    jersi.rules.makeCell( 'c4', [1, -2] );
+    jersi.rules.makeCell( 'c5', [2, -2] );
+    jersi.rules.makeCell( 'c6', [3, -2] );
+    jersi.rules.makeCell( 'c7', [4, -2] );
+
+    jersi.rules.makeCell( 'c', [5, -2], true);
+
+    // Row "d"
+    jersi.rules.makeCell( 'd1', [-3, -1] );
+    jersi.rules.makeCell( 'd2', [-2, -1] );
+    jersi.rules.makeCell( 'd3', [-1, -1] );
+    jersi.rules.makeCell( 'd4', [0, -1] );
+    jersi.rules.makeCell( 'd5', [1, -1] );
+    jersi.rules.makeCell( 'd6', [2, -1] );
+    jersi.rules.makeCell( 'd7', [3, -1] );
+    jersi.rules.makeCell( 'd8', [4, -1] );
+
+    jersi.rules.makeCell( 'd', [5, -1], true);
+
+    // Row "e"
+    jersi.rules.makeCell( 'e1', [-4, 0] );
+    jersi.rules.makeCell( 'e2', [-3, 0] );
+    jersi.rules.makeCell( 'e3', [-2, 0] );
+    jersi.rules.makeCell( 'e4', [-1, 0] );
+    jersi.rules.makeCell( 'e5', [0, 0] );
+    jersi.rules.makeCell( 'e6', [1, 0] );
+    jersi.rules.makeCell( 'e7', [2, 0] );
+    jersi.rules.makeCell( 'e8', [3, 0] );
+    jersi.rules.makeCell( 'e9', [4, 0] );
+
+    // Row "f"
+
+    jersi.rules.makeCell( 'f', [-5, 1], true);
+
+    jersi.rules.makeCell( 'f1', [-4, 1] );
+    jersi.rules.makeCell( 'f2', [-3, 1] );
+    jersi.rules.makeCell( 'f3', [-2, 1] );
+    jersi.rules.makeCell( 'f4', [-1, 1] );
+    jersi.rules.makeCell( 'f5', [0, 1] );
+    jersi.rules.makeCell( 'f6', [1, 1] );
+    jersi.rules.makeCell( 'f7', [2, 1] );
+    jersi.rules.makeCell( 'f8', [3, 1] );
+
+    // Row "g"
+    jersi.rules.makeCell( 'g', [-5, 2], true);
+
+    jersi.rules.makeCell( 'g1', [-4, 2] );
+    jersi.rules.makeCell( 'g2', [-3, 2] );
+    jersi.rules.makeCell( 'g3', [-2, 2] );
+    jersi.rules.makeCell( 'g4', [-1, 2] );
+    jersi.rules.makeCell( 'g5', [0, 2] );
+    jersi.rules.makeCell( 'g6', [1, 2] );
+    jersi.rules.makeCell( 'g7', [2, 2] );
+
+    // Row "h"
+    jersi.rules.makeCell( 'h', [-6, 3], true);
+
+    jersi.rules.makeCell( 'h1', [-5, 3] );
+    jersi.rules.makeCell( 'h2', [-4, 3] );
+    jersi.rules.makeCell( 'h3', [-3, 3] );
+    jersi.rules.makeCell( 'h4', [-2, 3] );
+    jersi.rules.makeCell( 'h5', [-1, 3] );
+    jersi.rules.makeCell( 'h6', [0, 3] );
+    jersi.rules.makeCell( 'h7', [1, 3] );
+    jersi.rules.makeCell( 'h8', [2, 3] );
+
+    // Row "i"
+    jersi.rules.makeCell( 'i', [-6, 4], true);
+
+    jersi.rules.makeCell( 'i1', [-5, 4] );
+    jersi.rules.makeCell( 'i2', [-4, 4] );
+    jersi.rules.makeCell( 'i3', [-3, 4] );
+    jersi.rules.makeCell( 'i4', [-2, 4] );
+    jersi.rules.makeCell( 'i5', [-1, 4] );
+    jersi.rules.makeCell( 'i6', [0, 4] );
+    jersi.rules.makeCell( 'i7', [1, 4] );
 }
+
+jersi.rules.makeCell = function(cell_name, position_uv, reserve){
+
+    if ( typeof reserve === "undefined" ) {
+        reserve = false;
+    };
+
+    const cell = {
+        index: jersi.rules.cells.length,
+        u: position_uv[0],
+        v: position_uv[1],
+        name: cell_name,
+        reserve: reserve,
+        bottom: null,
+        top: null
+    };
+
+    jersi.rules.cells.push(cell);
+
+    return  cell;
+};
 
 jersi.rules.makeAllCubes = function(){
     for ( const cube_color of Object.values(jersi.rules.CubeColor) ) {
@@ -253,21 +377,21 @@ jersi.rules.setAllCubes = function(){
 
     // white reserve
 
-    jersi.rules.setCubeByLabels("a9", "M1");
-    jersi.rules.setCubeByLabels("a9", "M2");
-    jersi.rules.setCubeByLabels("b9", "M3");
-    jersi.rules.setCubeByLabels("b9", "M4");
-    jersi.rules.setCubeByLabels("c9", "W1");
-    jersi.rules.setCubeByLabels("c9", "W2");
+    jersi.rules.setCubeByLabels("a", "M1");
+    jersi.rules.setCubeByLabels("a", "M2");
+    jersi.rules.setCubeByLabels("b", "M3");
+    jersi.rules.setCubeByLabels("b", "M4");
+    jersi.rules.setCubeByLabels("c", "W1");
+    jersi.rules.setCubeByLabels("c", "W2");
 
     // black reserve
 
-    jersi.rules.setCubeByLabels("i9", "m1");
-    jersi.rules.setCubeByLabels("i9", "m2");
-    jersi.rules.setCubeByLabels("h9", "m3");
-    jersi.rules.setCubeByLabels("h9", "m4");
-    jersi.rules.setCubeByLabels("g9", "w1");
-    jersi.rules.setCubeByLabels("g9", "w2");
+    jersi.rules.setCubeByLabels("i", "m1");
+    jersi.rules.setCubeByLabels("i", "m2");
+    jersi.rules.setCubeByLabels("h", "m3");
+    jersi.rules.setCubeByLabels("h", "m4");
+    jersi.rules.setCubeByLabels("g", "w1");
+    jersi.rules.setCubeByLabels("g", "w2");
 };
 
 jersi.rules.setCubeByLabels = function(cell_name, cube_name){
