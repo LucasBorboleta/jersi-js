@@ -138,6 +138,7 @@ JERSI-JS-COPYRIGHT-MD-END */
     outline-style:outset !important;
     outline-color:white !important;
     outline-width:2px !important;
+    z-index: 1 !important;
 }
 
 .jersi_cube_unselected_class{
