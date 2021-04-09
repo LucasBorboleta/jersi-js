@@ -33,11 +33,9 @@ Inserting two squares of side $c$, separated each other by $\epsilon$, inside an
 $$
 c=\frac{h-\epsilon}{2+tg(\frac{\pi}{6})}=\frac{h-\epsilon}{2+\frac{\sqrt{3}}{3}}
 $$
-In turn, inserting two squares of side $c$, separated each other by $\epsilon$, inside a squared box of side $b$, the inner squares being distant by $\epsilon$ from the enclosing box, implies the following constraint on such box:
-$$
-b=2c+3\epsilon
-$$
-Such enclosing box and the hexagon must have the same center.
+In turn, the two squares of side $c$, separated each other by $\epsilon$, are inserted into a rectangular box of width $w$ and hight $h$.
+
+Such enclosing rectangular box and the hexagon must have the same center.
 
 ## About coordinates
 
@@ -53,4 +51,4 @@ The x-y coordinates of the central hexagon of $H$ are:
 $$
 (x_H, y_H)=(x_C, y_C)+u(w,0)+v(w \sin(\frac{\pi}{6}), -w \cos(\frac{\pi}{6}))=(x_C, y_C)+w(u+\frac{v}{2},-v\frac{\sqrt{3}}{2})
 $$
-In turn, the box $B$ enclosing either a cube or a stack of two cubes has same center than the hosting hexagon $H$. But the $left$ and $top$ of the box $B$ are shifted back from $(x_H, y_H)$ by $(-\frac{b}{2},-\frac{b}{2})$.
+In turn, the rectangular box $B$ enclosing either a cube or a stack of two cubes has same center than the hosting hexagon $H$. But the $left$ and $top$ of the rectangular box $B$ are shifted back from $(x_H, y_H)$ by $(-\frac{w}{2},-\frac{h}{2})$.

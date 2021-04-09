@@ -45,7 +45,8 @@ jersi.draw.__initModule = function(){
 
     jersi.draw.cell_epsilon = 4;
     jersi.draw.cube_size = (jersi.draw.hexagon_height - jersi.draw.cell_epsilon)/(2 + Math.sqrt(3)/3);
-    jersi.draw.cell_size = 2*jersi.draw.cube_size + 3*jersi.draw.cell_epsilon;
+    jersi.draw.cell_width = jersi.draw.hexagon_width;
+    jersi.draw.cell_height = jersi.draw.hexagon_height;
 
     jersi.draw.CubeDivLocation = { BOTTOM:0, MIDDLE:1, TOP:2 };
 
@@ -113,14 +114,14 @@ jersi.draw.makeCellDiv = function(cell){
         }
     }
 
-    const x_cell_div = x_hexagon - jersi.draw.cell_size/2 + x_shift;
-    const y_cell_div = y_hexagon - jersi.draw.cell_size/2;
+    const x_cell_div = x_hexagon - jersi.draw.cell_width/2 + x_shift; // cell left
+    const y_cell_div = y_hexagon - jersi.draw.cell_height/2; // cell top
 
     cell_div.style.left = Math.floor(x_cell_div) + "px";
     cell_div.style.top = Math.floor(y_cell_div) + "px";
 
-    cell_div.style.width = Math.floor(jersi.draw.cell_size) + "px";
-    cell_div.style.height = Math.floor(jersi.draw.cell_size) + "px";
+    cell_div.style.width = Math.floor(jersi.draw.cell_width) + "px";
+    cell_div.style.height = Math.floor(jersi.draw.cell_height) + "px";
 
     cell_div.className = "jersi_cell_class";
     cell_div.className += " " + "jersi_cell_unselected_class";
@@ -161,17 +162,17 @@ jersi.draw.makeAllCubesDiv = function(){
 jersi.draw.makeCubeDiv = function(cell_div, cube_div_location, cube_div_prefix){
 
     const cube_div_suffix = Object.keys(jersi.draw.CubeDivLocation)[cube_div_location];
-    const cube_left = (jersi.draw.cell_size - jersi.draw.cube_size)/2;
+    const cube_left = (jersi.draw.cell_width - jersi.draw.cube_size)/2;
     let cube_top = 0;
 
     if ( cube_div_location === jersi.draw.CubeDivLocation.BOTTOM ) {
-        cube_top = jersi.draw.cell_size - jersi.draw.cube_size - jersi.draw.cell_epsilon;
+        cube_top = (jersi.draw.cell_height + jersi.draw.cell_epsilon)/2;
 
     } else if ( cube_div_location === jersi.draw.CubeDivLocation.MIDDLE ) {
-        cube_top = (jersi.draw.cell_size - jersi.draw.cube_size)/2;
+        cube_top = (jersi.draw.cell_height - jersi.draw.cube_size)/2;
 
     } else if ( cube_div_location === jersi.draw.CubeDivLocation.TOP ) {
-        cube_top = jersi.draw.cell_epsilon;
+        cube_top = (jersi.draw.cell_height - jersi.draw.cell_epsilon - 2*jersi.draw.cube_size)/2;
     }
 
     const cube_div = document.createElement("DIV");
