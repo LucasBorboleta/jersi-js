@@ -81,6 +81,7 @@ jersi.presenter.selectCell = function(cell_index){
             if ( jersi.presenter.source_stack_selected ) {
                 jersi.presenter.source_stack_selected = false;
                 jersi.draw.selectCellStackDiv(jersi.presenter.source_cell, false);
+                jersi.draw.playMoveSound();
                 jersi.rules.moveStack(jersi.presenter.source_cell, jersi.presenter.destination_cell);
                 jersi.presenter.enable_ok_button(true);
                 jersi.presenter.enable_undo_button(true);
@@ -88,6 +89,7 @@ jersi.presenter.selectCell = function(cell_index){
             } else if ( jersi.presenter.source_cube_selected ) {
                 jersi.presenter.source_cube_selected = false;
                 jersi.draw.selectCellCubeDiv(jersi.presenter.source_cell, false);
+                jersi.draw.playMoveSound();
                 jersi.rules.moveCube(jersi.presenter.source_cell, jersi.presenter.destination_cell);
                 jersi.presenter.enable_ok_button(true);
                 jersi.presenter.enable_undo_button(true);

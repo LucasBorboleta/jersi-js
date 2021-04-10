@@ -6,6 +6,6 @@ This project acts as a preparation for the Board Game Arena implementation, at l
 
 If you intent to derive or to sell either a text, a product or a software from this work, then read the [**LICENSE**](./docs/LICENSE.txt) and the  [**COPYRIGHT**](./docs/COPYRIGHT.md)  documents.
 
-Here is an overview of the current GUI. For the exercise, the hexagonal field has been simplified as a rectangular field. 
+Here is an overview of the current GUI still in progress. 
 
-![](./docs/jersi-js-exo-1.jpg)
+![](./docs/jersi-js-exo-2.jpg)

@@ -29,15 +29,19 @@ jersi.draw.__initModule = function(){
     // Init inner classes
     // None
 
-    jersi.draw.drawZone = document.getElementById( "jersi_drawZone" );
+    jersi.draw.draw_zone = document.getElementById( "jersi_drawZone" );
+
+    jersi.draw.audio_slide = document.getElementById( "jersi_audio_slide" );
+    jersi.draw.audio_click_light = document.getElementById( "jersi_audio_clickLight" );
+    jersi.draw.audio_click_dark = document.getElementById( "jersi_audio_clickDark" );
 
     {
-        const width_height_ratio = jersi.draw.drawZone.clientWidth/jersi.draw.drawZone.clientHeight;
+        const width_height_ratio = jersi.draw.draw_zone.clientWidth/jersi.draw.draw_zone.clientHeight;
         const width_height_ratio_error = Math.abs(width_height_ratio - 3*Math.sqrt(3)/4)
         jersi.debug.assert(width_height_ratio_error <= 0.001, "drawZone: width_height_ratio");
     }
 
-    jersi.draw.board_width = jersi.draw.drawZone.clientWidth;
+    jersi.draw.board_width = jersi.draw.draw_zone.clientWidth;
 
     jersi.draw.hexagon_width = jersi.draw.board_width/12;
     jersi.draw.hexagon_height = jersi.draw.hexagon_width*2*Math.sqrt(3)/3;
@@ -78,17 +82,85 @@ jersi.draw.__initModule = function(){
     jersi.draw.labels_are_displayed = true;
 
     // Debug the mouse position when inside the drawZone
-    jersi.draw.drawZone.addEventListener( "mousemove" ,
+    jersi.draw.draw_zone.addEventListener( "mousemove" ,
         function(event){
             const mouse_position = jersi.draw.getMousePosition(event);
             jersi.debug.writeMousePosition(Math.floor(mouse_position.x), Math.floor(mouse_position.y));
         },
         false);
 
-    jersi.draw.drawZone.addEventListener( "click" , jersi.draw.onHexagonClick, false);
+    jersi.draw.draw_zone.addEventListener( "click" , jersi.draw.onHexagonClick, false);
 
     jersi.debug.writeMessage( "jersi.draw.__initModule(): done" );
 };
+
+// --- JERSI_BEGIN: commands ---
+
+jersi.draw.onHexagonClick = function(event){
+
+    const mouse_position = jersi.draw.getMousePosition(event);
+    const x = mouse_position.x;
+    const y = mouse_position.y;
+
+    for ( const hexagon of jersi.draw.hexagons ) {
+
+        let mouse_inside_hexagon = false;
+
+        if ( x > hexagon.north_west.x + jersi.draw.hexagon_epsilon && x < hexagon.north_east.x - jersi.draw.hexagon_epsilon &&
+             y > hexagon.north.y + jersi.draw.hexagon_epsilon && y < hexagon.south.y - jersi.draw.hexagon_epsilon ) {
+
+            if ( y >= hexagon.north_west.y && y <= hexagon.south_west.y ) {
+                mouse_inside_hexagon = true;
+
+            } else if ( y <= hexagon.north_west.y && x <= hexagon.north.x ) {
+                const y_limit = hexagon.north_west.y +
+                                (hexagon.north.y - hexagon.north_west.y)/(hexagon.north.x - hexagon.north_west.x)*(x - hexagon.north_west.x);
+                mouse_inside_hexagon = (y > y_limit);
+
+            } else if ( y <= hexagon.north_west.y && x > hexagon.north.x ) {
+                const y_limit = hexagon.north.y +
+                                (hexagon.north_east.y - hexagon.north.y)/(hexagon.north_east.x - hexagon.north.x)*(x - hexagon.north.x);
+                mouse_inside_hexagon = (y > y_limit);
+
+            } else if ( y >= hexagon.south_west.y && x <= hexagon.north.x ) {
+                const y_limit = hexagon.south_west.y +
+                                (hexagon.south.y - hexagon.south_west.y)/(hexagon.south.x - hexagon.south_west.x)*(x - hexagon.south_west.x);
+                mouse_inside_hexagon = (y < y_limit);
+
+            } else if ( y >= hexagon.south_west.y && x > hexagon.north.x ) {
+                const y_limit = hexagon.south.y +
+                                (hexagon.south_east.y - hexagon.south.y)/(hexagon.south_east.x - hexagon.south.x)*(x - hexagon.south.x);
+                mouse_inside_hexagon = (y < y_limit);
+            }
+        }
+
+        if ( mouse_inside_hexagon ) {
+            jersi.presenter.selectCell(hexagon.cell_index);
+            break;
+        }
+    }
+};
+
+jersi.draw.playMoveSound = function(){
+    jersi.draw.playSoundClickDark();
+};
+
+jersi.draw.playSlideSound = function(){
+    jersi.draw.audio_slide.currentTime = 0.4 * jersi.draw.audio_slide.duration;
+    jersi.draw.audio_slide.play();
+};
+
+jersi.draw.playSoundClickLight = function(){
+    jersi.draw.audio_click_light.currentTime = 0.6 * jersi.draw.audio_click_light.duration;
+    jersi.draw.audio_click_light.play();
+};
+
+jersi.draw.playSoundClickDark = function(){
+    jersi.draw.audio_click_dark.currentTime = 0.7 * jersi.draw.audio_click_dark.duration;
+    jersi.draw.audio_click_dark.play();
+};
+
+// --- JERSI_END: commands ---
 
 // --- JERSI_BEGIN: makers ---
 
@@ -142,7 +214,7 @@ jersi.draw.makeCellDiv = function(cell){
         cell_div.appendChild(cell_paragraph);
     }
 
-    jersi.draw.drawZone.appendChild(cell_div);
+    jersi.draw.draw_zone.appendChild(cell_div);
 
     {
         const hexagon_x_min = x_cell_div;
@@ -167,7 +239,7 @@ jersi.draw.makeCellDiv = function(cell){
             south_east:{x:hexagon_x_max, y:hexagon_y_second}
         };
 
-        jersi.draw.hexagons.push(hexagon);        
+        jersi.draw.hexagons.push(hexagon);
     }
 
     return cell_div;
@@ -224,56 +296,11 @@ jersi.draw.makeCubeDiv = function(cell_div, cube_div_location, cube_div_prefix){
 // --- JERSI_BEGIN: getters ---
 
 jersi.draw.getMousePosition = function(event){
-    const drawZoneRectangle = jersi.draw.drawZone.getBoundingClientRect();
+    const drawZoneRectangle = jersi.draw.draw_zone.getBoundingClientRect();
     return {
         x: event.clientX - drawZoneRectangle.left,
         y: event.clientY - drawZoneRectangle.top
     };
-};
-
-jersi.draw.onHexagonClick = function(event){
-
-    const mouse_position = jersi.draw.getMousePosition(event);
-    const x = mouse_position.x;
-    const y = mouse_position.y;
-
-    for ( const hexagon of jersi.draw.hexagons ) {
-
-        let mouse_inside_hexagon = false;
-
-        if ( x > hexagon.north_west.x + jersi.draw.hexagon_epsilon && x < hexagon.north_east.x - jersi.draw.hexagon_epsilon &&
-             y > hexagon.north.y + jersi.draw.hexagon_epsilon && y < hexagon.south.y - jersi.draw.hexagon_epsilon) {
-
-            if ( y >= hexagon.north_west.y && y <= hexagon.south_west.y ) {
-                mouse_inside_hexagon = true;
-
-            } else if ( y <= hexagon.north_west.y && x <= hexagon.north.x ) {
-                const y_limit = hexagon.north_west.y +
-                    (hexagon.north.y - hexagon.north_west.y)/(hexagon.north.x - hexagon.north_west.x)*(x - hexagon.north_west.x);
-                mouse_inside_hexagon = (y > y_limit);
-
-            } else if ( y <= hexagon.north_west.y && x > hexagon.north.x ) {
-                const y_limit = hexagon.north.y +
-                    (hexagon.north_east.y - hexagon.north.y)/(hexagon.north_east.x - hexagon.north.x)*(x - hexagon.north.x);
-                mouse_inside_hexagon = (y > y_limit);
-
-            } else if ( y >= hexagon.south_west.y && x <= hexagon.north.x ) {
-                const y_limit = hexagon.south_west.y +
-                    (hexagon.south.y - hexagon.south_west.y)/(hexagon.south.x - hexagon.south_west.x)*(x - hexagon.south_west.x);
-                mouse_inside_hexagon = (y < y_limit);
-
-            } else if ( y >= hexagon.south_west.y && x > hexagon.north.x ) {
-                const y_limit = hexagon.south.y +
-                    (hexagon.south_east.y - hexagon.south.y)/(hexagon.south_east.x - hexagon.south.x)*(x - hexagon.south.x);
-                mouse_inside_hexagon = (y < y_limit);
-            }
-        }
-
-        if ( mouse_inside_hexagon ) {
-            jersi.presenter.selectCell(hexagon.cell_index);
-            break;
-        }
-    }
 };
 
 // --- JERSI_END: getters ---

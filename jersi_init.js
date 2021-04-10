@@ -24,6 +24,8 @@ jersi.__initModule = function(){
 
     // Init required packages
     jersi.debug.__initModule();
+    jersi.debug.enable (true);
+
     jersi.draw.__initModule();
     jersi.presenter.__initModule();
     jersi.rules.__initModule();
