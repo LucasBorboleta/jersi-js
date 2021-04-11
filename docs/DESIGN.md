@@ -52,3 +52,36 @@ $$
 (x_H, y_H)=(x_C, y_C)+u(w,0)+v(w \sin(\frac{\pi}{6}), -w \cos(\frac{\pi}{6}))=(x_C, y_C)+w(u+\frac{v}{2},-v\frac{\sqrt{3}}{2})
 $$
 In turn, the rectangular box $B$ enclosing either a cube or a stack of two cubes has same center than the hosting hexagon $H$. But the $left$ and $top$ of the rectangular box $B$ are shifted back from $(x_H, y_H)$ by $(-\frac{w}{2},-\frac{h}{2})$.
+
+## About transmission protocol
+
+The concern is the transmission of information between two remote browsers playing *jersi-js*. For simplicity, let us assume that:
+
+- The information is transfered by human thanks to either email, SMS or tchat.
+- The information is represented as a string of characters.
+- The information is limited to the last move of the active player.
+
+Having made the above assumptions, the solution has to satisfy the following additional requirements:
+
+- The transmitted string should be short.
+- The transmitted string should be difficult to corrupt.
+- The transmitted string should contain redundancy about the game state.
+
+Our solution:
+
+- Encode a triplet of integers $(k, t, m)$, where:
+  - $t$ is the turn number (1 for the first move of whites, 2 for the first move of blacks, ...);
+  - $m$ is the rank of the played move amongst all the sorted possible moves at that turn;
+  - $k$ is an integer computed recursively turn by turn:
+    - $k_t = f(k_{t-1})$ 
+    - $k_1$ is determined randomly
+    - $k_t$ runs between $0$ and $k_{max}$
+- All these three integers $(k,t,m)$ are represented in base $b=34$ which correspond to the $0-9$ digits plus the $A-Z$ letters, where $I$  and $O$ have been removed.
+- $k$ uses always the same number of digits; so some $0$ might be put as prefix.
+- $t$ and $m$ are ciphered using addition modulo $k$ in the base $b$, applying such addition digit per digit and after padding $t$ and $m$ with zeros so that they are represented by a number of digits which are multiple of the number of digits of the key $k$.
+
+Notes:
+
+- The representation of the move $m$ implies the computation of all possible moves. This is a good thing for avoiding corruption. But it requires an extra-programming effort.
+- Such $m$ representation would not be optimal for compressing the game state in a search algorithm like MCTS.
+
