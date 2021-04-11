@@ -34,6 +34,7 @@ jersi.draw.__initModule = function(){
     jersi.draw.audio_slide = document.getElementById( "jersi_audio_slide" );
     jersi.draw.audio_click_light = document.getElementById( "jersi_audio_clickLight" );
     jersi.draw.audio_click_dark = document.getElementById( "jersi_audio_clickDark" );
+    jersi.draw.audio_click_dark_filtered = document.getElementById( "jersi_audio_clickDarkFiltered" );
 
     {
         const width_height_ratio = jersi.draw.draw_zone.clientWidth/jersi.draw.draw_zone.clientHeight;
@@ -142,12 +143,10 @@ jersi.draw.onHexagonClick = function(event){
 };
 
 jersi.draw.playMoveSound = function(){
-    jersi.draw.playSoundClickDark();
-};
-
-jersi.draw.playSlideSound = function(){
-    jersi.draw.audio_slide.currentTime = 0.4 * jersi.draw.audio_slide.duration;
-    jersi.draw.audio_slide.play();
+    //jersi.draw.playSlideSound();
+    //jersi.draw.playSoundClickLight();
+    //jersi.draw.playSoundClickDark();
+    jersi.draw.playSoundClickDarkFiltered();
 };
 
 jersi.draw.playSoundClickLight = function(){
@@ -158,6 +157,16 @@ jersi.draw.playSoundClickLight = function(){
 jersi.draw.playSoundClickDark = function(){
     jersi.draw.audio_click_dark.currentTime = 0.7 * jersi.draw.audio_click_dark.duration;
     jersi.draw.audio_click_dark.play();
+};
+
+jersi.draw.playSoundClickDarkFiltered = function(){
+    jersi.draw.audio_click_dark_filtered.currentTime = 0.75 * jersi.draw.audio_click_dark_filtered.duration;
+    jersi.draw.audio_click_dark_filtered.play();
+};
+
+jersi.draw.playSlideSound = function(){
+    jersi.draw.audio_slide.currentTime = 0.4 * jersi.draw.audio_slide.duration;
+    jersi.draw.audio_slide.play();
 };
 
 // --- JERSI_END: commands ---
