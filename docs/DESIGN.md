@@ -55,6 +55,8 @@ In turn, the rectangular box $B$ enclosing either a cube or a stack of two cubes
 
 ## About transmission protocol
 
+### First approach
+
 The concern is the transmission of information between two remote browsers playing *jersi-js*. For simplicity, let us assume that:
 
 - The information is transfered by human thanks to either email, SMS or tchat.
@@ -84,4 +86,18 @@ Notes:
 
 - The representation of the move $m$ implies the computation of all possible moves. This is a good thing for avoiding corruption. But it requires an extra-programming effort.
 - Such $m$ representation would not be optimal for compressing the game state in a search algorithm like MCTS.
+
+### Second approach
+
+Let us encode the complete state:
+
+- Turn: difficult to anticipate; let say $4 \times 40 = 160$; it requires 8 bits, so 1 byte.
+- Credit: an integer between 0 and 40; it requires 8 bits, or 1 byte.
+- For each of 42 cubes:
+  - Its hexagon amongst 69; it requires 9 bits;
+  - It position: top, bottom ; or it not inside some hexagon: reserved or captured; it requires 2 bits;
+  - So for each cube, it requires 11 bits
+- For all cubes, it requires $42 \times 11 = 420 + 42 = 462$ bits, or 58 bytes
+
+All in all, it requires 60 bytes.
 
