@@ -145,27 +145,31 @@ jersi.draw.onHexagonClick = function(event){
 jersi.draw.playMoveSound = function(){
     //jersi.draw.playSlideSound();
     //jersi.draw.playSoundClickLight();
-    //jersi.draw.playSoundClickDark();
-    jersi.draw.playSoundClickDarkFiltered();
+    //jersi.draw.playSoundClickDark(); // A bit of noisy tail
+    jersi.draw.playSoundClickDarkFiltered(); // My favorite
 };
 
 jersi.draw.playSoundClickLight = function(){
     jersi.draw.audio_click_light.currentTime = 0.6 * jersi.draw.audio_click_light.duration;
+    jersi.draw.audio_click_light.volume = 0.20;
     jersi.draw.audio_click_light.play();
 };
 
 jersi.draw.playSoundClickDark = function(){
     jersi.draw.audio_click_dark.currentTime = 0.7 * jersi.draw.audio_click_dark.duration;
+    jersi.draw.audio_click_dark.volume = 0.40;
     jersi.draw.audio_click_dark.play();
 };
 
 jersi.draw.playSoundClickDarkFiltered = function(){
     jersi.draw.audio_click_dark_filtered.currentTime = 0.75 * jersi.draw.audio_click_dark_filtered.duration;
+    jersi.draw.audio_click_dark_filtered.volume = 1.00;
     jersi.draw.audio_click_dark_filtered.play();
 };
 
 jersi.draw.playSlideSound = function(){
     jersi.draw.audio_slide.currentTime = 0.4 * jersi.draw.audio_slide.duration;
+    jersi.draw.audio_slide.volume = 0.40;
     jersi.draw.audio_slide.play();
 };
 
