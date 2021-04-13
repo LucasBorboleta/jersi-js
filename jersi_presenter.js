@@ -44,7 +44,33 @@ jersi.presenter.__initModule = function(){
     jersi.debug.writeMessage( "jersi.presenter.__initModule(): done" );
 };
 
-// --- JERSI_END: setters ---
+// --- JERSI_BEGIN: commands ---
+
+jersi.presenter.clearSelection = function(){
+    jersi.presenter.source_cell = null;
+    jersi.presenter.destination_cell = null;
+
+    jersi.presenter.source_cube_selected = false;
+    jersi.presenter.source_stack_selected = false;
+};
+
+jersi.presenter.enable_ok_button = function(condition){
+    this.ok_button.disabled = ( ! condition );
+};
+
+jersi.presenter.ok = function(){
+    jersi.rules.saveGame();
+    jersi.presenter.enable_ok_button(false);
+    jersi.presenter.enable_undo_button(false);
+};
+
+jersi.presenter.restartGame = function(){
+    jersi.presenter.clearSelection();
+    jersi.rules.restartGame();
+    jersi.draw.updateAllCellsDiv();
+    jersi.presenter.enable_ok_button(false);
+    jersi.presenter.enable_undo_button(false);
+};
 
 jersi.presenter.selectCell = function(cell_index){
 
@@ -125,28 +151,6 @@ jersi.presenter.selectCell = function(cell_index){
     }
 };
 
-// --- JERSI_END: getters ---
-
-// --- JERSI_BEGIN: starters and savers ---
-
-jersi.presenter.enable_ok_button = function(condition){
-    this.ok_button.disabled = ( ! condition );
-};
-
-jersi.presenter.ok = function(){
-    jersi.rules.saveGame();
-    jersi.presenter.enable_ok_button(false);
-    jersi.presenter.enable_undo_button(false);
-};
-
-jersi.presenter.restartGame = function(){
-    jersi.presenter.clearSelection();
-    jersi.rules.restartGame();
-    jersi.draw.updateAllCellsDiv();
-    jersi.presenter.enable_ok_button(false);
-    jersi.presenter.enable_undo_button(false);
-};
-
 jersi.presenter.startGame = function(){
     jersi.rules.startGame();
 
@@ -168,13 +172,6 @@ jersi.presenter.enable_undo_button = function(condition){
     this.undo_button.disabled = ( ! condition );
 };
 
-// --- JERSI_END: starters and savers ---
+// --- JERSI_END: commands ---
 
-jersi.presenter.clearSelection = function(){
-    jersi.presenter.source_cell = null;
-    jersi.presenter.destination_cell = null;
-
-    jersi.presenter.source_cube_selected = false;
-    jersi.presenter.source_stack_selected = false;
-};
 //////////////////////////////////////////////////////////////////////////

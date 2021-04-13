@@ -81,6 +81,7 @@ Our solution:
 - All these three integers $(k,t,m)$ are represented in base $b=34$ which correspond to the $0-9$ digits plus the $A-Z$ letters, where $I$  and $O$ have been removed.
 - $k$ uses always the same number of digits; so some $0$ might be put as prefix.
 - $t$ and $m$ are ciphered using addition modulo $k$ in the base $b$, applying such addition digit per digit and after padding $t$ and $m$ with zeros so that they are represented by a number of digits which are multiple of the number of digits of the key $k$.
+- Example of encoding: F0A-ATD-PQ4.
 
 Notes:
 
@@ -100,4 +101,3 @@ Let us encode the complete state:
 - For all cubes, it requires $42 \times 11 = 420 + 42 = 462$ bits, or 58 bytes
 
 All in all, it requires 60 bytes.
-

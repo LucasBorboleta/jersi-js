@@ -49,7 +49,6 @@ jersi.draw.__initModule = function(){
     jersi.draw.hexagon_side = jersi.draw.hexagon_height/2;
     jersi.draw.hexagon_epsilon = 0;
 
-
     jersi.draw.cell_epsilon = 4;
     jersi.draw.cube_size = (jersi.draw.hexagon_height - jersi.draw.cell_epsilon)/(2 + Math.sqrt(3)/3);
     jersi.draw.cell_width = jersi.draw.hexagon_width;
