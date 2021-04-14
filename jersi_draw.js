@@ -148,6 +148,10 @@ jersi.draw.playMoveSound = function(){
     jersi.draw.playSoundClickDarkFiltered(); // My favorite
 };
 
+jersi.draw.playRestartSound = function(){
+    jersi.draw.playSlideSound();
+};
+
 jersi.draw.playSoundClickLight = function(){
     jersi.draw.audio_click_light.currentTime = 0.6 * jersi.draw.audio_click_light.duration;
     jersi.draw.audio_click_light.volume = 0.20;
@@ -170,6 +174,10 @@ jersi.draw.playSlideSound = function(){
     jersi.draw.audio_slide.currentTime = 0.4 * jersi.draw.audio_slide.duration;
     jersi.draw.audio_slide.volume = 0.40;
     jersi.draw.audio_slide.play();
+};
+
+jersi.draw.playUndoSound = function(){
+    jersi.draw.playSlideSound();
 };
 
 // --- JERSI_END: commands ---
@@ -340,7 +348,9 @@ jersi.draw.selectCellDiv = function(cell, condition){
 jersi.draw.selectCellCubeDiv = function(cell, condition){
     jersi.debug.assert( jersi.rules.cellHasCube(cell), "cell_source has cube");
 
-    if ( cell.top !== null ) {
+    const cell_state = jersi.rules.cells_states[cell.index];
+
+    if ( cell_state.top !== null ) {
         const cube_div_top = jersi.draw.cubes_div[cell.index][jersi.draw.CubeDivLocation.TOP];
         jersi.draw.selectCubeDiv(cube_div_top, condition);
 
@@ -408,20 +418,22 @@ jersi.draw.updateCellDiv = function(cell){
     const cube_div_middle = jersi.draw.cubes_div[cell_div_index][jersi.draw.CubeDivLocation.MIDDLE];
     const cube_div_bottom = jersi.draw.cubes_div[cell_div_index][jersi.draw.CubeDivLocation.BOTTOM];
 
-    if ( cell.bottom === null && cell.top === null ) {
+    const cell_state = jersi.rules.cells_states[cell.index];
+
+    if ( cell_state.bottom === null && cell_state.top === null ) {
         jersi.draw.clearCubeDiv(cube_div_top);
         jersi.draw.clearCubeDiv(cube_div_middle);
         jersi.draw.clearCubeDiv(cube_div_bottom);
 
-    } else if  ( cell.bottom !== null && cell.top === null ) {
+    } else if  ( cell_state.bottom !== null && cell_state.top === null ) {
         jersi.draw.clearCubeDiv(cube_div_top);
-        jersi.draw.setCubeDiv(cube_div_middle, cell.bottom.color, cell.bottom.sort);
+        jersi.draw.setCubeDiv(cube_div_middle, cell_state.bottom.color, cell_state.bottom.sort);
         jersi.draw.clearCubeDiv(cube_div_bottom);
 
-    } else if  ( cell.bottom !== null && cell.top !== null ) {
-        jersi.draw.setCubeDiv(cube_div_top, cell.top.color, cell.top.sort);
+    } else if  ( cell_state.bottom !== null && cell_state.top !== null ) {
+        jersi.draw.setCubeDiv(cube_div_top, cell_state.top.color, cell_state.top.sort);
         jersi.draw.clearCubeDiv(cube_div_middle);
-        jersi.draw.setCubeDiv(cube_div_bottom, cell.bottom.color, cell.bottom.sort);
+        jersi.draw.setCubeDiv(cube_div_bottom, cell_state.bottom.color, cell_state.bottom.sort);
 
     } else {
         jersi.debug.assert(false, "jersi.draw.updateCellDiv(): failed");

@@ -39,6 +39,7 @@ jersi.rules.__initModule = function(){
 
     jersi.rules.CubeColor = { WHITE:0, BLACK:1 };
     jersi.rules.CubeSort = { FOOL:0, KING:1, MOUNTAIN:2, PAPER:3, ROCK:4, SCISSORS:5, WISE:6 };
+    jersi.rules.CubeState = { ACTIVATED:0, CAPTURED:1, RESERVED:2 };
 
     jersi.rules.CubeLabel = []
     jersi.rules.CubeLabel[jersi.rules.CubeColor.WHITE] = []
@@ -59,9 +60,12 @@ jersi.rules.__initModule = function(){
     jersi.rules.CubeLabel[jersi.rules.CubeColor.BLACK][jersi.rules.CubeSort.WISE] = 'w';
 
     jersi.rules.cells = [];
-    jersi.rules.cubes = [];
+    jersi.rules.cells_states = [];
+    jersi.rules.saved_cells_states = [];
 
-    jersi.rules.saved_cells = [];
+    jersi.rules.cubes = [];
+    jersi.rules.cubes_states = [];
+    jersi.rules.saved_cubes_states = [];
 
     jersi.rules.game_is_running = false;
 
@@ -71,7 +75,8 @@ jersi.rules.__initModule = function(){
 // --- JERSI_BEGIN: getters ---
 
 jersi.rules.cellHasCube = function(cell){
-    return cell.bottom != null || cell.top != null;
+    const cell_state = jersi.rules.cells_states[cell.index];
+    return cell_state.bottom != null || cell_state.top != null;
 };
 
 jersi.rules.cellHasSelectableCube = function(cell){
@@ -83,7 +88,8 @@ jersi.rules.cellHasSelectableStack = function(cell){
 };
 
 jersi.rules.cellHasStack = function(cell){
-    return cell.bottom != null && cell.top != null;
+    const cell_state = jersi.rules.cells_states[cell.index];
+    return cell_state.bottom != null && cell_state.top != null;
 };
 
 jersi.rules.getCell = function(cell_name){
@@ -104,8 +110,10 @@ jersi.rules.getCubeColorAndSort = function(cube_label){
     }
     jersi.debug.assert(false, "jersi.rules.getCubeColorAndSort(): failed");
 };
+
 jersi.rules.iSEmptyCell = function(cell){
-    return cell.bottom == null && cell.top == null;
+    const cell_state = jersi.rules.cells_states[cell.index];
+    return cell_state.bottom == null && cell_state.top == null;
 };
 
 jersi.rules.isSelectableDestinationCell = function(cell){
@@ -121,18 +129,6 @@ jersi.rules.isSelectableSourceCell = function(cell){
 // --- JERSI_BEGIN: makers ---
 
 jersi.rules.makeAllCells = function(){
-
-    for ( const x of jersi.rules.xIndices ) {
-        for ( const y of jersi.rules.yIndices ) {
-            const cell_name = jersi.rules.yLabels[y] + jersi.rules.xLabels[x];
-            const cell = {  index: jersi.rules.cells.length,
-                            x: x,
-                            y: y,
-                            name: cell_name,
-                            bottom: null,
-                            top: null };
-        }
-    }
 
     // Row "a"
     jersi.rules.makeCell( 'a1', [-1, -4] );
@@ -250,12 +246,17 @@ jersi.rules.makeCell = function(cell_name, position_uv, reserve){
         u: position_uv[0],
         v: position_uv[1],
         name: cell_name,
-        reserve: reserve,
+        reserve: reserve
+    };
+
+    const cell_state = {
+        index: cell.index,
         bottom: null,
         top: null
     };
 
     jersi.rules.cells.push(cell);
+    jersi.rules.cells_states.push(cell_state);
 
     return  cell;
 };
@@ -285,6 +286,7 @@ jersi.rules.makeAllCubes = function(){
                                name: cube_name,
                                index: jersi.rules.cubes.length };
                 jersi.rules.cubes.push(cube);
+                jersi.rules.cubes_states.push(jersi.rules.CubeState.CAPTURED);
             }
         }
     }
@@ -294,7 +296,11 @@ jersi.rules.makeAllCubes = function(){
 
 // --- JERSI_BEGIN: setters ---
 
-jersi.rules.clearCell = function(cell){ cell.bottom = null;  cell.top = null; }
+jersi.rules.clearCell = function(cell){
+    const cell_state = jersi.rules.cells_states[cell.index];
+    cell_state.bottom = null;
+    cell_state.top = null;
+}
 
 jersi.rules.clearAllCells = function(){
     jersi.rules.cells.forEach(jersi.rules.clearCell);
@@ -304,13 +310,16 @@ jersi.rules.moveCube = function(cell_source, cell_destination){
     jersi.debug.assert( jersi.rules.cellHasCube(cell_source), "cell_source has cube");
     jersi.debug.assert( jersi.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
 
-    if ( cell_source.top != null ) {
-        cell_destination.bottom = cell_source.top;
-        cell_source.top = null;
+    const cell_source_status = jersi.rules.cells_states[cell_source.index];
+    const cell_destination_status = jersi.rules.cells_states[cell_destination.index];
+
+    if ( cell_source_status.top != null ) {
+        cell_destination_status.bottom = cell_source_status.top;
+        cell_source_status.top = null;
 
     } else {
-        cell_destination.bottom = cell_source.bottom;
-        cell_source.bottom = null;
+        cell_destination_status.bottom = cell_source_status.bottom;
+        cell_source_status.bottom = null;
     }
 };
 
@@ -318,18 +327,29 @@ jersi.rules.moveStack = function(cell_source, cell_destination){
     jersi.debug.assert( jersi.rules.cellHasStack(cell_source), "cell_source has stack");
     jersi.debug.assert( jersi.rules.iSEmptyCell(cell_destination), "cell_destination is empty");
 
-    cell_destination.bottom = cell_source.bottom;
-    cell_destination.top = cell_source.top;
+    const cell_source_status = jersi.rules.cells_states[cell_source.index];
+    const cell_destination_status = jersi.rules.cells_states[cell_destination.index];
 
-    cell_source.bottom = null;
-    cell_source.top = null;
+    cell_destination_status.bottom = cell_source_status.bottom;
+    cell_destination_status.top = cell_source_status.top;
+
+    cell_source_status.bottom = null;
+    cell_source_status.top = null;
 };
 
 jersi.rules.setCube = function(cell, cube){
-    if ( cell.bottom === null ) { cell.bottom = cube; }
-    else if  ( cell.top === null ) { cell.top = cube; }
+    const cell_state = jersi.rules.cells_states[cell.index];
+
+    if ( cell_state.bottom === null ) { cell_state.bottom = cube; }
+    else if  ( cell_state.top === null ) { cell_state.top = cube; }
     else {
         jersi.debug.assert(false, "jersi.rules.setCube(): failed");
+    }
+
+    if ( cell.reserve ) {
+        jersi.rules.cubes_states[cube.index] = jersi.rules.CubeState.RESERVED;
+    } else {
+        jersi.rules.cubes_states[cube.index] = jersi.rules.CubeState.ACTIVATED;
     }
 };
 
@@ -418,31 +438,31 @@ jersi.rules.restartGame = function(){
 };
 
 jersi.rules.saveGame = function(){
-    jersi.rules.saveAllCells();
+    jersi.rules.saveAllCellsStates();
 };
 
-jersi.rules.saveCell = function(cell){
-    const saved_cell = {cell:cell, bottom:cell.bottom, top:cell.top};
-    jersi.rules.saved_cells.push(saved_cell);
+jersi.rules.saveCellState = function(cell_state){
+    const saved_cell_state = {index:cell_state.index, bottom:cell_state.bottom, top:cell_state.top};
+    jersi.rules.saved_cells_states.push(saved_cell_state);
 }
 
-jersi.rules.saveAllCells = function(){
-    jersi.rules.saved_cells = [];
-    jersi.rules.cells.forEach(jersi.rules.saveCell);
+jersi.rules.saveAllCellsStates = function(){
+    jersi.rules.saved_cells_states = [];
+    jersi.rules.cells_states.forEach(jersi.rules.saveCellState);
 };
 
 jersi.rules.loadGame = function(){
-    jersi.rules.loadAllCells();
+    jersi.rules.loadAllCellsStates();
 };
 
-jersi.rules.loadCell = function(saved_cell){
-    const cell = saved_cell.cell;
-    cell.bottom = saved_cell.bottom;
-    cell.top = saved_cell.top;
+jersi.rules.loadCellState = function(saved_cell_state){
+    const cell_state = jersi.rules.cells_states[saved_cell_state.index];
+    cell_state.bottom = saved_cell_state.bottom;
+    cell_state.top = saved_cell_state.top;
 }
 
-jersi.rules.loadAllCells = function(){
-    jersi.rules.saved_cells.forEach(jersi.rules.loadCell);
+jersi.rules.loadAllCellsStates = function(){
+    jersi.rules.saved_cells_states.forEach(jersi.rules.loadCellState);
 };
 
 // --- JERSI_END: starters and savers ---

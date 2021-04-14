@@ -30,6 +30,8 @@ jersi.presenter.__initModule = function(){
     // Init inner classes
     // None
 
+    jersi.presenter.user_has_interacted = false;
+
     jersi.presenter.source_cell = null;
     jersi.presenter.destination_cell = null;
     jersi.presenter.source_cube_selected = false;
@@ -67,12 +69,19 @@ jersi.presenter.ok = function(){
 jersi.presenter.restartGame = function(){
     jersi.presenter.clearSelection();
     jersi.rules.restartGame();
+
+    if (jersi.presenter.user_has_interacted ) {
+        jersi.draw.playRestartSound();
+    }
+
     jersi.draw.updateAllCellsDiv();
     jersi.presenter.enable_ok_button(false);
     jersi.presenter.enable_undo_button(false);
 };
 
 jersi.presenter.selectCell = function(cell_index){
+
+    jersi.presenter.user_has_interacted = true;
 
     if ( ! jersi.rules.game_is_running ) {
         return;
@@ -163,6 +172,7 @@ jersi.presenter.startGame = function(){
 jersi.presenter.undo = function(){
     jersi.presenter.clearSelection();
     jersi.rules.loadGame();
+    jersi.draw.playUndoSound();
     jersi.draw.updateAllCellsDiv();
     jersi.presenter.enable_ok_button(false);
     jersi.presenter.enable_undo_button(false);
