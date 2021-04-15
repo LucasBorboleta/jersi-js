@@ -61,11 +61,11 @@ jersi.rules.__initModule = function(){
 
     jersi.rules.cells = [];
     jersi.rules.cells_states = [];
-    jersi.rules.saved_cells_states = [];
+    jersi.rules.saved_cells_states = null;
 
     jersi.rules.cubes = [];
     jersi.rules.cubes_states = [];
-    jersi.rules.saved_cubes_states = [];
+    jersi.rules.saved_cubes_states = null;
 
     jersi.rules.game_is_running = false;
 
@@ -439,30 +439,60 @@ jersi.rules.restartGame = function(){
 
 jersi.rules.saveGame = function(){
     jersi.rules.saveAllCellsStates();
+    jersi.rules.saveAllCubesStates();
 };
 
-jersi.rules.saveCellState = function(cell_state){
-    const saved_cell_state = {index:cell_state.index, bottom:cell_state.bottom, top:cell_state.top};
-    jersi.rules.saved_cells_states.push(saved_cell_state);
+jersi.rules.saveCellState = function(cell_state, cell_index){
+    const saved_cell_state = {bottom:cell_state.bottom, top:cell_state.top};
+    jersi.rules.saved_cells_states[cell_index] = saved_cell_state;
 }
 
 jersi.rules.saveAllCellsStates = function(){
-    jersi.rules.saved_cells_states = [];
+
+    if  ( jersi.rules.saved_cells_states === null ) {
+        jersi.rules.saved_cells_states = Array.from(jersi.rules.cells_states);
+        jersi.rules.saved_cells_states.fill(null);
+    }
+
     jersi.rules.cells_states.forEach(jersi.rules.saveCellState);
+};
+
+jersi.rules.saveCubeState = function(cube_state, cube_index){
+    const saved_cube_state = cube_state;
+    jersi.rules.saved_cubes_states[cube_index] = saved_cube_state;
+}
+
+jersi.rules.saveAllCubesStates = function(){
+
+    if  ( jersi.rules.saved_cubes_states === null ) {
+        jersi.rules.saved_cubes_states = Array.from(jersi.rules.cubes_states);
+        jersi.rules.saved_cubes_states.fill(null);
+    }
+
+    jersi.rules.cubes_states.forEach(jersi.rules.saveCubeState);
 };
 
 jersi.rules.loadGame = function(){
     jersi.rules.loadAllCellsStates();
+    jersi.rules.loadAllCubeStates();
 };
 
-jersi.rules.loadCellState = function(saved_cell_state){
-    const cell_state = jersi.rules.cells_states[saved_cell_state.index];
+jersi.rules.loadCellState = function(saved_cell_state, cell_index){
+    const cell_state = jersi.rules.cells_states[cell_index];
     cell_state.bottom = saved_cell_state.bottom;
     cell_state.top = saved_cell_state.top;
 }
 
 jersi.rules.loadAllCellsStates = function(){
     jersi.rules.saved_cells_states.forEach(jersi.rules.loadCellState);
+};
+
+jersi.rules.loadCubeState = function(saved_cube_state, cube_index){
+    jersi.rules.saved_cubes_states[cube_index] = saved_cube_state;
+}
+
+jersi.rules.loadAllCubeStates = function(){
+    jersi.rules.saved_cubes_states.forEach(jersi.rules.loadCubeState);
 };
 
 // --- JERSI_END: starters and savers ---

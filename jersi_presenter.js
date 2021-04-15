@@ -70,8 +70,9 @@ jersi.presenter.restartGame = function(){
     jersi.presenter.clearSelection();
     jersi.rules.restartGame();
 
-    if (jersi.presenter.user_has_interacted ) {
+    if ( jersi.presenter.user_has_interacted ) {
         jersi.draw.playRestartSound();
+        jersi.presenter.user_has_interacted = false; //TODO: improve the semantic
     }
 
     jersi.draw.updateAllCellsDiv();
