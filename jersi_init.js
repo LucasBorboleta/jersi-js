@@ -38,6 +38,8 @@ jersi.__initModule = function(){
         document.getElementById( "jersi_text_pleaseWait" ).style.display = "none";
     }
 
+    //jersi.debug.tryEncoding();
+
     jersi.debug.writeMessage( "jersi.__initModule(): done" );
 };
 ///////////////////////////////////////////////////////////////////////////////

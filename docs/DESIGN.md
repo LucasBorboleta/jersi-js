@@ -90,6 +90,24 @@ Notes:
 
 ### Second approach
 
+Let us encode the action:
+
+* Like the first encoding approach, let us define a key $k$, in order to cypher the rest of the information.
+* Then let us define the type of action and the involved cells:
+  1. one drop: 1 cell 
+  2. double drops: 2 cells
+  3. one single cube move: 2 cells
+  4. one single cube move with king relocation: 3 cells
+  5. one single stack move: 2 cells
+  6. one single stack move with king relocation: 3 cells
+  7. double cube-stack move: 3 cells
+  8. double cube-stack move with king relocation: 4 cells
+  9. double stack-cube move: 3 cells
+  10. double stack-cube move with king relocation: 4 cells
+* The type of action requires: 4 bits + 4*7 bits = 4 + 28 = 32 bits.
+
+### Third approach
+
 Let us encode the complete state:
 
 - Turn: difficult to anticipate; let say $4 \times 40 = 160$; it requires 8 bits, so 1 byte.

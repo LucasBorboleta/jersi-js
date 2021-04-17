@@ -71,6 +71,42 @@ jersi.debug.enable = function(condition){
     }
 };
 
+jersi.debug.tryEncoding = function() {
+
+    let padZero = function(s, n){
+        if ( s.length < n ) {
+            return (n - s.length)*'0' + s;
+        } else {
+            return s;
+        }
+    };
+
+    const move_key = Math.floor(Math.random()*16*16);
+    const move_type = Math.floor(Math.random()*10);
+    const move_cells = [Math.floor(Math.random()*69), Math.floor(Math.random()*69), Math.floor(Math.random()*69), Math.floor(Math.random()*69)];
+    jersi.debug.writeMessage( "move_key=" + move_key + ", move_type=" + move_type + ", move_cells=" + move_cells );
+
+    // Encode the sequence move_type + move_cells in, respectiveley, 4 bits and 4*7bits
+    let move_code = "";
+    move_code = move_code + padZero(move_key.toString(2), 8);
+    move_code = move_code + padZero(move_type.toString(2), 4);
+    move_code = move_code + padZero(move_cells[0].toString(2), 7);
+    move_code = move_code + padZero(move_cells[1].toString(2), 7);
+    move_code = move_code + padZero(move_cells[2].toString(2), 7);
+    //move_code = move_code + padZero(move_cells[3].toString(2), 7);
+
+    // Convert as string hexadecimal
+    const move_code_string = parseInt(move_code, 2).toString(36);
+    jersi.debug.writeMessage( "move_code=" + move_code + ", length=" + move_code.length +
+                            ", move_code_string=" + move_code_string + ", length=" + move_code_string.length);
+    jersi.debug.writeMessage( move_code.substr(0, 8) );
+    jersi.debug.writeMessage( move_code.substr(8, 4) );
+    jersi.debug.writeMessage( move_code.substr(12, 7) );
+    jersi.debug.writeMessage( move_code.substr(19, 7) );
+    jersi.debug.writeMessage( move_code.substr(26, 7) );
+    //jersi.debug.writeMessage( move_code.substr(33, 7) );
+};
+
 jersi.debug.writeMessage = function(text){
     if ( jersi.debug.is_enabled ) {
         jersi.debug.messageCount += 1 ;
