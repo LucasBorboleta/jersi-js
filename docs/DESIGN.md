@@ -104,7 +104,9 @@ Let us encode the action:
   8. double cube-stack move with king relocation: 4 cells
   9. double stack-cube move: 3 cells
   10. double stack-cube move with king relocation: 4 cells
-* The type of action requires: 4 bits + 4*7 bits = 4 + 28 = 32 bits.
+* The type of action requires: 4 bits + 4*7 bits = 4 + 28 = 32 bits = 4 bytes. 
+* So an action can be represented by 8 hexadecimal digits.
+* Example: $AF-01-C1-25$
 
 ### Third approach
 
