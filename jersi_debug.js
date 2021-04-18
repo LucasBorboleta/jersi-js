@@ -76,6 +76,14 @@ jersi.debug.tryEncoding = function() {
     const ACTION_BIT_SCHEMA = [8, 4, 7, 7, 7, 7];
     const ACTION_BIT_SCHEMA_LENGTH = ACTION_BIT_SCHEMA.reduce(function(sum, x){return sum + x}, 0);
 
+    jersi.debug.assert( ACTION_BIT_SCHEMA_LENGTH < 53 );
+    /*
+        A safe integer is an integer that can be exactly represented as an IEEE-754 double precision number
+        (all integers from (2^53 - 1) to -(2^53 - 1))
+
+        source: https://www.w3schools.com/ ; see also Number.isSafeInteger()
+    */
+
     const BIT_RADIX = 2;
     const BITS_IN_BYTE = 8;
     const BYTE_RADIX = 256;
