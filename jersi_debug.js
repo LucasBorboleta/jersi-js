@@ -73,103 +73,135 @@ jersi.debug.enable = function(condition){
 
 jersi.debug.tryEncoding = function() {
 
-    const BIT_COUNTS = [8, 4, 7, 7, 7, 7];
-    const BIT_TOTAL_COUNT = BIT_COUNTS.reduce(function(sum, x){return sum + x}, 0);
+    const ACTION_BIT_SCHEMA = [8, 4, 7, 7, 7, 7];
+    const ACTION_BIT_SCHEMA_LENGTH = ACTION_BIT_SCHEMA.reduce(function(sum, x){return sum + x}, 0);
 
-    let padBitSequence = function(bit_sequence, bit_count){
-        jersi.debug.assert( bit_sequence.length <= bit_count );
+    const BIT_RADIX = 2;
+    const BITS_IN_BYTE = 8;
+    const BYTE_RADIX = 256;
+    const COMPRESSION_RADIX = 36;
+    const COMPRESSION_SEPARATOR = "-";
 
-        if ( bit_sequence.length < bit_count ) {
-            return "0".repeat(bit_count - bit_sequence.length) + bit_sequence;
+    let firstKey = function(){
+        const key = Math.floor(Math.random()*BYTE_RADIX);
+        jersi.debug.assert( key >= 0 && key < BYTE_RADIX );
+        return key;
+    };
+
+    let nextKey = function(key){
+        jersi.debug.assert( key >= 0 && key < BYTE_RADIX );
+        const a = 5;
+        const c = 3;
+        const m = BYTE_RADIX;
+
+        /* We just want to ensure a maximal cycle length, no more.
+
+           When c ≠ 0, correctly chosen parameters allow a period equal to m, for all seed values. This will occur if and only if
+           1) m and c are relatively prime,
+           2) (a - 1) is divisible by all prime factors of m,
+           3) (a - 1) is divisible by 4 if m is divisible by 4.
+
+           References:
+           [1] Hull, T. E.; Dobell, A. R. (July 1962). "Random Number Generators"
+           [2] Knuth, Donald (1997). Seminumerical Algorithms. The Art of Computer Programming. 2 (3rd ed.).
+        */
+        return (a*key + c) % m;
+    };
+
+    let alignBitSequence = function(bit_sequence, bit_length){
+        jersi.debug.assert( bit_sequence.length <= bit_length );
+
+        if ( bit_sequence.length < bit_length ) {
+            return "0".repeat(bit_length - bit_sequence.length) + bit_sequence;
         } else {
             return bit_sequence;
         }
     };
 
-    let encodeAsBits = function(bit_counts, int_values){
+    let encodeBits = function(bit_schema, int_values){
 
-        jersi.debug.assert( bit_counts.length === int_values.length );
-        const value_count = bit_counts.length;
+        jersi.debug.assert( bit_schema.length === int_values.length );
+        const value_count = bit_schema.length;
 
         let bit_sequence = "";
 
         for (let value_index=0; value_index < value_count; value_index++) {
-            jersi.debug.assert( bit_counts[value_index] > 0 );
+            jersi.debug.assert( bit_schema[value_index] > 0 );
             jersi.debug.assert( int_values[value_index] >= 0 );
 
-            const value_as_bits = int_values[value_index].toString(2);
-            jersi.debug.assert( value_as_bits.length <= bit_counts[value_index] );
+            const value_as_bits = int_values[value_index].toString(BIT_RADIX);
+            jersi.debug.assert( value_as_bits.length <= bit_schema[value_index] );
 
-            bit_sequence += padBitSequence(value_as_bits, bit_counts[value_index]);
+            bit_sequence += alignBitSequence(value_as_bits, bit_schema[value_index]);
         }
 
         return bit_sequence;
     };
 
 
-    let decodeAsBits = function(bit_counts, bit_sequence){
+    let decodeBits = function(bit_schema, bit_sequence){
 
-        jersi.debug.assert( bit_counts.reduce(function(sum, x){return sum + x}, 0) === bit_sequence.length );
-        const value_count = bit_counts.length;
+        jersi.debug.assert( bit_schema.reduce(function(sum, x){return sum + x}, 0) === bit_sequence.length );
+        const value_count = bit_schema.length;
 
         let int_values = [];
 
         let bit_start = 0;
         for (let value_index=0; value_index < value_count; value_index++) {
-            jersi.debug.assert( bit_counts[value_index] > 0 );
+            jersi.debug.assert( bit_schema[value_index] > 0 );
 
-            const bit_chunck = bit_sequence.substr(bit_start, bit_counts[value_index]);
-            const value = parseInt(bit_chunck, 2)
+            const bit_chunk = bit_sequence.substr(bit_start, bit_schema[value_index]);
+            const value = parseInt(bit_chunk, BIT_RADIX)
             int_values.push(value);
 
-            bit_start += bit_counts[value_index];
+            bit_start += bit_schema[value_index];
         }
 
         return int_values;
     };
 
     let cipherBits = function(bit_sequence){
-        jersi.debug.assert( bit_sequence.length % 8 === 0 );
+        jersi.debug.assert( bit_sequence.length % BITS_IN_BYTE === 0 );
 
-        const byte_count = bit_sequence.length / 8;
-        let bit_counts = [];
+        const byte_count = bit_sequence.length / BITS_IN_BYTE;
+        let bit_schema = [];
         for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
-            bit_counts.push(8)
+            bit_schema.push(BITS_IN_BYTE)
         }
 
-        let byte_values = decodeAsBits(bit_counts, bit_sequence);
+        let byte_values = decodeBits(bit_schema, bit_sequence);
         const key = byte_values[0];
 
         for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
             const byte =  byte_values[byte_index];
-            const ciphered_byte = (byte + key) % 256;
+            const ciphered_byte = (byte + key) % BYTE_RADIX;
             byte_values[byte_index] = ciphered_byte;
         }
 
-        const ciphered_bit_sequence = encodeAsBits(bit_counts, byte_values);
+        const ciphered_bit_sequence = encodeBits(bit_schema, byte_values);
 
         return ciphered_bit_sequence;
     };
 
     let decipherBits = function(bit_sequence){
-        jersi.debug.assert( bit_sequence.length % 8 === 0 );
+        jersi.debug.assert( bit_sequence.length % BITS_IN_BYTE === 0 );
 
-        const byte_count = bit_sequence.length / 8;
-        let bit_counts = [];
+        const byte_count = bit_sequence.length / BITS_IN_BYTE;
+        let bit_schema = [];
         for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
-            bit_counts.push(8)
+            bit_schema.push(BITS_IN_BYTE)
         }
 
-        let byte_values = decodeAsBits(bit_counts, bit_sequence);
+        let byte_values = decodeBits(bit_schema, bit_sequence);
         const key = byte_values[0];
 
         for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
             const byte =  byte_values[byte_index];
-            const ciphered_byte = (byte + 256 - key) % 256;
+            const ciphered_byte = (byte + BYTE_RADIX - key) % BYTE_RADIX;
             byte_values[byte_index] = ciphered_byte;
         }
 
-        const deciphered_bit_sequence = encodeAsBits(bit_counts, byte_values);
+        const deciphered_bit_sequence = encodeBits(bit_schema, byte_values);
 
         return deciphered_bit_sequence;
     };
@@ -177,7 +209,7 @@ jersi.debug.tryEncoding = function() {
     let compressBits = function(bit_sequence){
         const group_size = 4;
 
-        const compressed_sequence = parseInt(bit_sequence, 2).toString(36);
+        const compressed_sequence = parseInt(bit_sequence, BIT_RADIX).toString(COMPRESSION_RADIX);
         let aligned_sequence = compressed_sequence;
         if ( aligned_sequence.length % group_size !== 0 ) {
             aligned_sequence = "0".repeat(group_size - (compressed_sequence.length % group_size)) + compressed_sequence;
@@ -188,21 +220,34 @@ jersi.debug.tryEncoding = function() {
         for (let group_index=0; group_index < group_count ; group_index++) {
             decorated_sequence += aligned_sequence.substr(group_index*group_size, group_size);
             if ( group_index < group_count - 1 ) {
-                decorated_sequence += "-";
+                decorated_sequence += COMPRESSION_SEPARATOR;
             }
         }
         return decorated_sequence;
     };
 
     let uncompressBits = function(compressed_sequence){
-        const undecorated_sequence = compressed_sequence.replace("-", "");
-        const bit_sequence = padBitSequence(parseInt(undecorated_sequence, 36).toString(2), BIT_TOTAL_COUNT);
+        const undecorated_sequence = compressed_sequence.replace(COMPRESSION_SEPARATOR, "");
+        const bit_sequence = alignBitSequence(parseInt(undecorated_sequence, COMPRESSION_RADIX).toString(BIT_RADIX), ACTION_BIT_SCHEMA_LENGTH);
         return bit_sequence;
     };
 
-    let key = Math.floor(Math.random()*16*16);
+    let compileMessage = function(action){
+        const action_bits = encodeBits( ACTION_BIT_SCHEMA, action);
+        const ciphered_action_bits = cipherBits(action_bits);
+        const message = compressBits(ciphered_action_bits);
+        return message;
+    };
 
-    const test_count = 256;
+    let decompileMessage = function(message){
+        const ciphered_action_bits = uncompressBits(message);
+        const deciphered_action_bits = decipherBits(ciphered_action_bits);
+        const action = decodeBits( ACTION_BIT_SCHEMA, deciphered_action_bits);
+        return action;
+    };
+
+    const test_count = BYTE_RADIX + 1;
+    let key = firstKey();
     for (let test_index=0; test_index <test_count ;  test_index++ )  {
         const action = [ key,
                          Math.floor(Math.random()*10),
@@ -211,30 +256,11 @@ jersi.debug.tryEncoding = function() {
                          Math.floor(Math.random()*69),
                          Math.floor(Math.random()*69)];
 
-        //jersi.debug.writeMessage( "action=" + action );
+        const message = compileMessage(action);
+        const retrieved_action = decompileMessage(message);
+        jersi.debug.writeMessage( "sent action=" + action + ", message=" + message + ", received action=" + retrieved_action);
 
-        const action_bits = encodeAsBits( BIT_COUNTS, action);
-        //jersi.debug.writeMessage( "action_bits=" + action_bits + ", action_bits.length=" + action_bits.length );
-
-        const ciphered_action_bits = cipherBits(action_bits);
-        //jersi.debug.writeMessage( "ciphered_action_bits=" + ciphered_action_bits + ", ciphered_action_bits.length=" + ciphered_action_bits.length );
-
-        const compressed_ciphered_action = compressBits(ciphered_action_bits);
-        //jersi.debug.writeMessage( "compressed_ciphered_action=" + compressed_ciphered_action );
-
-        const uncompressed_ciphered_action_bits = uncompressBits(compressed_ciphered_action);
-        //jersi.debug.writeMessage( "uncompressed_ciphered_action_bits=" + uncompressed_ciphered_action_bits + ", uncompressed_ciphered_action_bits.length=" + uncompressed_ciphered_action_bits.length );
-
-        const deciphered_action_bits = decipherBits(uncompressed_ciphered_action_bits);
-        //jersi.debug.writeMessage( "deciphered_action_bits=" + deciphered_action_bits + ", deciphered_action_bits.length=" + deciphered_action_bits.length );
-
-        const retrieved_action = decodeAsBits( BIT_COUNTS, deciphered_action_bits);
-        //jersi.debug.writeMessage( "retrieved_action=" + retrieved_action );
-
-        jersi.debug.writeMessage( "sent action=" + action + ", message=" + compressed_ciphered_action + ", received action=" + retrieved_action);
-
-        key = (3*key + 5) % 256;
-
+        key = nextKey(key);
     }
 };
 
