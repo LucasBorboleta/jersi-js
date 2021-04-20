@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 JERSI-JS-COPYRIGHT-MD-END */
 ///////////////////////////////////////////////////////////////////////////////
 jersi.messager = { };
+jersi.messager.private = { };
 jersi.messager.__initModuleCalled = false;
 
 jersi.messager.__initModule = function(){
@@ -28,7 +29,7 @@ jersi.messager.__initModule = function(){
     // Init inner classes
     // None
 
-    jersi.messager.ACTION_BIT_SCHEMA = [8, 4, 7, 7, 7, 7];
+    jersi.messager.ACTION_BIT_SCHEMA = [8, 4, 7, 7, 7, 7]; // (key, action_type, cell_1, cell_2, cell_3, cell_4)
     jersi.messager.ACTION_BIT_SCHEMA_LENGTH = jersi.messager.ACTION_BIT_SCHEMA.reduce(function(sum, x){return sum + x}, 0);
 
     jersi.debug.assert( jersi.messager.ACTION_BIT_SCHEMA_LENGTH < 53 );
@@ -48,169 +49,19 @@ jersi.messager.__initModule = function(){
     jersi.debug.writeMessage( "jersi.messager.__initModule(): done" );
 };
 
-jersi.messager.firstKey = function(){
-    const key = Math.floor(Math.random()*jersi.messager.BYTE_RADIX);
-    jersi.debug.assert( key >= 0 && key < jersi.messager.BYTE_RADIX );
-    return key;
-};
-
-jersi.messager.nextKey = function(key){
-    jersi.debug.assert( key >= 0 && key < jersi.messager.BYTE_RADIX );
-    const a = 5;
-    const c = 3;
-    const m = jersi.messager.BYTE_RADIX;
-
-    /* We just want to ensure a maximal cycle length, no more.
-
-       When c ≠ 0, correctly chosen parameters allow a period equal to m, for all seed values. This will occur if and only if
-       1) m and c are relatively prime,
-       2) (a - 1) is divisible by all prime factors of m,
-       3) (a - 1) is divisible by 4 if m is divisible by 4.
-
-       References:
-       [1] Hull, T. E.; Dobell, A. R. (July 1962). "Random Number Generators"
-       [2] Knuth, Donald (1997). Seminumerical Algorithms. The Art of Computer Programming. 2 (3rd ed.).
-    */
-    return (a*key + c) % m;
-};
-
-jersi.messager.alignBitSequence = function(bit_sequence, bit_length){
-    jersi.debug.assert( bit_sequence.length <= bit_length );
-
-    if ( bit_sequence.length < bit_length ) {
-        return "0".repeat(bit_length - bit_sequence.length) + bit_sequence;
-    } else {
-        return bit_sequence;
-    }
-};
-
-jersi.messager.encodeBits = function(bit_schema, int_values){
-
-    jersi.debug.assert( bit_schema.length === int_values.length );
-    const value_count = bit_schema.length;
-
-    let bit_sequence = "";
-
-    for (let value_index=0; value_index < value_count; value_index++) {
-        jersi.debug.assert( bit_schema[value_index] > 0 );
-        jersi.debug.assert( int_values[value_index] >= 0 );
-
-        const value_as_bits = int_values[value_index].toString(jersi.messager.BIT_RADIX);
-        jersi.debug.assert( value_as_bits.length <= bit_schema[value_index] );
-
-        bit_sequence += jersi.messager.alignBitSequence(value_as_bits, bit_schema[value_index]);
-    }
-
-    return bit_sequence;
-};
-
-
-jersi.messager.decodeBits = function(bit_schema, bit_sequence){
-
-    jersi.debug.assert( bit_schema.reduce(function(sum, x){return sum + x}, 0) === bit_sequence.length );
-    const value_count = bit_schema.length;
-
-    let int_values = [];
-
-    let bit_start = 0;
-    for (let value_index=0; value_index < value_count; value_index++) {
-        jersi.debug.assert( bit_schema[value_index] > 0 );
-
-        const bit_chunk = bit_sequence.substr(bit_start, bit_schema[value_index]);
-        const value = parseInt(bit_chunk, jersi.messager.BIT_RADIX)
-        int_values.push(value);
-
-        bit_start += bit_schema[value_index];
-    }
-
-    return int_values;
-};
-
-jersi.messager.cipherBits = function(bit_sequence){
-    jersi.debug.assert( bit_sequence.length % jersi.messager.BITS_IN_BYTE === 0 );
-
-    const byte_count = bit_sequence.length / jersi.messager.BITS_IN_BYTE;
-    let bit_schema = [];
-    for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
-        bit_schema.push(jersi.messager.BITS_IN_BYTE)
-    }
-
-    let byte_values = jersi.messager.decodeBits(bit_schema, bit_sequence);
-    const key = byte_values[0];
-
-    for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
-        const byte =  byte_values[byte_index];
-        const ciphered_byte = (byte + key) % jersi.messager.BYTE_RADIX;
-        byte_values[byte_index] = ciphered_byte;
-    }
-
-    const ciphered_bit_sequence = jersi.messager.encodeBits(bit_schema, byte_values);
-
-    return ciphered_bit_sequence;
-};
-
-jersi.messager.decipherBits = function(bit_sequence){
-    jersi.debug.assert( bit_sequence.length % jersi.messager.BITS_IN_BYTE === 0 );
-
-    const byte_count = bit_sequence.length / jersi.messager.BITS_IN_BYTE;
-    let bit_schema = [];
-    for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
-        bit_schema.push(jersi.messager.BITS_IN_BYTE)
-    }
-
-    let byte_values = jersi.messager.decodeBits(bit_schema, bit_sequence);
-    const key = byte_values[0];
-
-    for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
-        const byte =  byte_values[byte_index];
-        const ciphered_byte = (byte + jersi.messager.BYTE_RADIX - key) % jersi.messager.BYTE_RADIX;
-        byte_values[byte_index] = ciphered_byte;
-    }
-
-    const deciphered_bit_sequence = jersi.messager.encodeBits(bit_schema, byte_values);
-
-    return deciphered_bit_sequence;
-};
-
-jersi.messager.compressBits = function(bit_sequence){
-    const group_size = 4;
-
-    const compressed_sequence = parseInt(bit_sequence, jersi.messager.BIT_RADIX).toString(jersi.messager.COMPRESSION_RADIX);
-    let aligned_sequence = compressed_sequence;
-    if ( aligned_sequence.length % group_size !== 0 ) {
-        aligned_sequence = "0".repeat(group_size - (compressed_sequence.length % group_size)) + compressed_sequence;
-    }
-
-    const group_count = aligned_sequence.length/group_size;
-    let decorated_sequence = "";
-    for (let group_index=0; group_index < group_count ; group_index++) {
-        decorated_sequence += aligned_sequence.substr(group_index*group_size, group_size);
-        if ( group_index < group_count - 1 ) {
-            decorated_sequence += jersi.messager.COMPRESSION_SEPARATOR;
-        }
-    }
-    return decorated_sequence;
-};
-
-jersi.messager.uncompressBits = function(compressed_sequence){
-    const undecorated_sequence = compressed_sequence.replace(jersi.messager.COMPRESSION_SEPARATOR, "");
-    const bit_sequence = jersi.messager.alignBitSequence(
-                            parseInt(undecorated_sequence, jersi.messager.COMPRESSION_RADIX)
-                            .toString(jersi.messager.BIT_RADIX), jersi.messager.ACTION_BIT_SCHEMA_LENGTH);
-    return bit_sequence;
-};
+// --- JERSI_BEGIN: public ---
 
 jersi.messager.compileMessage = function(action){
-    const action_bits = jersi.messager.encodeBits( jersi.messager.ACTION_BIT_SCHEMA, action);
-    const ciphered_action_bits = jersi.messager.cipherBits(action_bits);
-    const message = jersi.messager.compressBits(ciphered_action_bits);
+    const action_bits = jersi.messager.private.encodeBits( jersi.messager.ACTION_BIT_SCHEMA, action);
+    const ciphered_action_bits = jersi.messager.private.cipherBits(action_bits);
+    const message = jersi.messager.private.compressBits(ciphered_action_bits);
     return message;
 };
 
 jersi.messager.decompileMessage = function(message){
-    const ciphered_action_bits = jersi.messager.uncompressBits(message);
-    const deciphered_action_bits = jersi.messager.decipherBits(ciphered_action_bits);
-    const action = jersi.messager.decodeBits( jersi.messager.ACTION_BIT_SCHEMA, deciphered_action_bits);
+    const ciphered_action_bits = jersi.messager.private.uncompressBits(message);
+    const deciphered_action_bits = jersi.messager.private.decipherBits(ciphered_action_bits);
+    const action = jersi.messager.private.decodeBits( jersi.messager.ACTION_BIT_SCHEMA, deciphered_action_bits);
     return action;
 };
 
@@ -218,7 +69,7 @@ jersi.messager.testMessager = function(){
 
     const test_count = jersi.messager.BYTE_RADIX ;
 
-    const initial_key = jersi.messager.firstKey();
+    const initial_key = jersi.messager.private.firstKey();
     let key = initial_key;
 
     for ( let test_index=0; test_index <test_count ;  test_index++ )  {
@@ -248,10 +99,169 @@ jersi.messager.testMessager = function(){
             jersi.debug.assert( key !== initial_key );
         }
 
-        key = jersi.messager.nextKey(key);
+        key = jersi.messager.private.nextKey(key);
     }
     jersi.debug.assert( key === initial_key ); // key has cycled
 
     jersi.debug.writeMessage( "jersi.messager.testMessager: done" );
 };
+
+// --- JERSI_END: public ---
+
+// --- JERSI_BEGIN: private ---
+
+jersi.messager.private.alignBitSequence = function(bit_sequence, bit_length){
+    jersi.debug.assert( bit_sequence.length <= bit_length );
+
+    if ( bit_sequence.length < bit_length ) {
+        return "0".repeat(bit_length - bit_sequence.length) + bit_sequence;
+    } else {
+        return bit_sequence;
+    }
+};
+
+jersi.messager.private.cipherBits = function(bit_sequence){
+    jersi.debug.assert( bit_sequence.length % jersi.messager.BITS_IN_BYTE === 0 );
+
+    const byte_count = bit_sequence.length / jersi.messager.BITS_IN_BYTE;
+    let bit_schema = [];
+    for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
+        bit_schema.push(jersi.messager.BITS_IN_BYTE)
+    }
+
+    let byte_values = jersi.messager.private.decodeBits(bit_schema, bit_sequence);
+    const key = byte_values[0];
+
+    for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
+        const byte =  byte_values[byte_index];
+        const ciphered_byte = (byte + key) % jersi.messager.BYTE_RADIX;
+        byte_values[byte_index] = ciphered_byte;
+    }
+
+    const ciphered_bit_sequence = jersi.messager.private.encodeBits(bit_schema, byte_values);
+
+    return ciphered_bit_sequence;
+};
+
+jersi.messager.private.compressBits = function(bit_sequence){
+    const group_size = 4;
+
+    const compressed_sequence = parseInt(bit_sequence, jersi.messager.BIT_RADIX).toString(jersi.messager.COMPRESSION_RADIX);
+    let aligned_sequence = compressed_sequence;
+    if ( aligned_sequence.length % group_size !== 0 ) {
+        aligned_sequence = "0".repeat(group_size - (compressed_sequence.length % group_size)) + compressed_sequence;
+    }
+
+    const group_count = aligned_sequence.length/group_size;
+    let decorated_sequence = "";
+    for (let group_index=0; group_index < group_count ; group_index++) {
+        decorated_sequence += aligned_sequence.substr(group_index*group_size, group_size);
+        if ( group_index < group_count - 1 ) {
+            decorated_sequence += jersi.messager.COMPRESSION_SEPARATOR;
+        }
+    }
+    return decorated_sequence;
+};
+
+jersi.messager.private.decipherBits = function(bit_sequence){
+    jersi.debug.assert( bit_sequence.length % jersi.messager.BITS_IN_BYTE === 0 );
+
+    const byte_count = bit_sequence.length / jersi.messager.BITS_IN_BYTE;
+    let bit_schema = [];
+    for ( let byte_index=0; byte_index < byte_count; byte_index++ ) {
+        bit_schema.push(jersi.messager.BITS_IN_BYTE)
+    }
+
+    let byte_values = jersi.messager.private.decodeBits(bit_schema, bit_sequence);
+    const key = byte_values[0];
+
+    for ( let byte_index=1; byte_index < byte_count; byte_index++ ) {
+        const byte =  byte_values[byte_index];
+        const ciphered_byte = (byte + jersi.messager.BYTE_RADIX - key) % jersi.messager.BYTE_RADIX;
+        byte_values[byte_index] = ciphered_byte;
+    }
+
+    const deciphered_bit_sequence = jersi.messager.private.encodeBits(bit_schema, byte_values);
+
+    return deciphered_bit_sequence;
+};
+
+jersi.messager.private.decodeBits = function(bit_schema, bit_sequence){
+
+    jersi.debug.assert( bit_schema.reduce(function(sum, x){return sum + x}, 0) === bit_sequence.length );
+    const value_count = bit_schema.length;
+
+    let int_values = [];
+
+    let bit_start = 0;
+    for (let value_index=0; value_index < value_count; value_index++) {
+        jersi.debug.assert( bit_schema[value_index] > 0 );
+
+        const bit_chunk = bit_sequence.substr(bit_start, bit_schema[value_index]);
+        const value = parseInt(bit_chunk, jersi.messager.BIT_RADIX)
+        int_values.push(value);
+
+        bit_start += bit_schema[value_index];
+    }
+
+    return int_values;
+};
+
+jersi.messager.private.encodeBits = function(bit_schema, int_values){
+
+    jersi.debug.assert( bit_schema.length === int_values.length );
+    const value_count = bit_schema.length;
+
+    let bit_sequence = "";
+
+    for (let value_index=0; value_index < value_count; value_index++) {
+        jersi.debug.assert( bit_schema[value_index] > 0 );
+        jersi.debug.assert( int_values[value_index] >= 0 );
+
+        const value_as_bits = int_values[value_index].toString(jersi.messager.BIT_RADIX);
+        jersi.debug.assert( value_as_bits.length <= bit_schema[value_index] );
+
+        bit_sequence += jersi.messager.private.alignBitSequence(value_as_bits, bit_schema[value_index]);
+    }
+
+    return bit_sequence;
+};
+
+jersi.messager.private.firstKey = function(){
+    const key = Math.floor(Math.random()*jersi.messager.BYTE_RADIX);
+    jersi.debug.assert( key >= 0 && key < jersi.messager.BYTE_RADIX );
+    return key;
+};
+
+jersi.messager.private.nextKey = function(key){
+    jersi.debug.assert( key >= 0 && key < jersi.messager.BYTE_RADIX );
+    const a = 5;
+    const c = 3;
+    const m = jersi.messager.BYTE_RADIX;
+
+    /* We just want to ensure a maximal cycle length, no more.
+
+       When c ≠ 0, correctly chosen parameters allow a period equal to m, for all seed values. This will occur if and only if
+       1) m and c are relatively prime,
+       2) (a - 1) is divisible by all prime factors of m,
+       3) (a - 1) is divisible by 4 if m is divisible by 4.
+
+       References:
+       [1] Hull, T. E.; Dobell, A. R. (July 1962). "Random Number Generators"
+       [2] Knuth, Donald (1997). Seminumerical Algorithms. The Art of Computer Programming. 2 (3rd ed.).
+    */
+    return (a*key + c) % m;
+};
+
+jersi.messager.private.uncompressBits = function(compressed_sequence){
+    const separator_rule = new RegExp(jersi.messager.COMPRESSION_SEPARATOR, "g")
+    const undecorated_sequence = compressed_sequence.replace(separator_rule, "");
+    const bit_sequence = jersi.messager.private.alignBitSequence(
+                            parseInt(undecorated_sequence, jersi.messager.COMPRESSION_RADIX)
+                            .toString(jersi.messager.BIT_RADIX), jersi.messager.ACTION_BIT_SCHEMA_LENGTH);
+    return bit_sequence;
+};
+
+// --- JERSI_END: private ---
+
 //////////////////////////////////////////////////////////////////////////

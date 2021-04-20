@@ -39,7 +39,7 @@ jersi.__initModule = function(){
         document.getElementById( "jersi_text_pleaseWait" ).style.display = "none";
     }
 
-    if ( false ) {
+    if ( true ) {
          jersi.messager.testMessager();
      }
 
