@@ -27,6 +27,7 @@ jersi.__initModule = function(){
     jersi.debug.enable (true);
 
     jersi.draw.__initModule();
+    jersi.messager.__initModule();
     jersi.presenter.__initModule();
     jersi.rules.__initModule();
 
@@ -39,7 +40,7 @@ jersi.__initModule = function(){
     }
 
     if ( true ) {
-         jersi.debug.tryEncoding();
+         jersi.messager.testMessager();
      }
 
     jersi.debug.writeMessage( "jersi.__initModule(): done" );
