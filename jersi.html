@@ -25,11 +25,10 @@ JERSI-JS-COPYRIGHT-MD-END -->
 
 <body onload="jersi.__initModule(); jersi.presenter.startGame();">
 
-	<div id="jersi_zone" >
+	<div class="jersi_row_class">
 
 		<div class="jersi_column_class">
-			<div class="jersi_drawZone_class" id="jersi_drawZone">
-			</div>
+			<div class="jersi_drawZone_class" id="jersi_drawZone"></div>
 		</div>
 
 		<div class="jersi_column_class">
@@ -80,7 +79,7 @@ JERSI-JS-COPYRIGHT-MD-END -->
 
 					<button class="jersi_button_class" type="button" id="jersi_button_debug"
 						onclick="jersi.debug.debug()">Debug</button>
-				</div>
+			</div>
 
 			<div class="jersi_debugZone_class" id="jersi_debugZone">
 
@@ -95,15 +94,15 @@ JERSI-JS-COPYRIGHT-MD-END -->
 				<p class="jersi_debug_messages_class" id="jersi_debug_messages"></p>
 			</div>
 		</div>
-
-		<script src="./jersi_init.js"></script>
-
-    	<script src="./jersi_debug.js"></script>
-    	<script src="./jersi_draw.js"></script>
-		<script src="./jersi_messager.js"></script>
-		<script src="./jersi_presenter.js"></script>
-		<script src="./jersi_rules.js"></script>
 	<div>
-</body
+
+	<script src="./jersi_init.js"></script>
+
+	<script src="./jersi_debug.js"></script>
+	<script src="./jersi_draw.js"></script>
+	<script src="./jersi_messager.js"></script>
+	<script src="./jersi_presenter.js"></script>
+	<script src="./jersi_rules.js"></script>
+</body>
 
 </html>

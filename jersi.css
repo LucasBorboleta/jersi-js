@@ -225,6 +225,7 @@ JERSI-JS-COPYRIGHT-MD-END */
 .jersi_debug_messages_class{
     color:inherit;
     background-color:inherit;
+    width:500px;
 }
 
 .jersi_debug_mousePosition_class{
@@ -313,4 +314,10 @@ JERSI-JS-COPYRIGHT-MD-END */
 
     outline-style:none;
     outline-width:0px;
+}
+
+.jersi_row_class:after{
+    content:"";
+    display:table;
+    clear:both;
 }
