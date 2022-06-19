@@ -55,6 +55,8 @@ In turn, the rectangular box $B$ enclosing either a cube or a stack of two cubes
 
 ## About transmission protocol
 
+This kind of feature has not the highest development priority. 
+
 ### First approach
 
 The concern is the transmission of information between two remote browsers playing *jersi-js*. For simplicity, let us assume that:
